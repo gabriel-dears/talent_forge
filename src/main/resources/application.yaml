@@ -1,0 +1,9 @@
+generatorName: spring
+inputSpec: openapi.yaml
+outputDir: generated/
+additionalProperties:
+  interfaceOnly: true
+  skipDefaultInterface: true
+  useTags: true
+  apiPackage: com.gabrieldears.talent_forge.api
+  modelPackage: com.gabrieldears.talent_forge.model

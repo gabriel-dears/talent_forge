@@ -1,0 +1,185 @@
+openapi: 3.0.3
+info:
+  title: AI Job Matching API
+  description: REST API for managing candidates, job postings, and AI-powered matching.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Candidates
+    description: Operations related to candidate management
+  - name: Jobs
+    description: Operations related to job postings
+  - name: Matching
+    description: Operations for matching candidates to jobs
+
+paths:
+  /candidates:
+    post:
+      tags:
+        - Candidates
+      summary: Register a new candidate
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                skills:
+                  type: array
+                  items:
+                    type: string
+                experienceYears:
+                  type: integer
+                resume:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Candidate created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
+
+  /candidates/{id}:
+    get:
+      tags:
+        - Candidates
+      summary: Get candidate by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Candidate data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
+
+  /jobs:
+    post:
+      tags:
+        - Jobs
+      summary: Post a new job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobRequest'
+      responses:
+        '201':
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+
+  /jobs/{id}:
+    get:
+      tags:
+        - Jobs
+      summary: Get job by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+
+  /match/{candidateId}:
+    post:
+      tags:
+        - Matching
+      summary: Match candidate to jobs
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Match result
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchResult'
+
+components:
+  schemas:
+    CandidateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        experienceYears:
+          type: integer
+        resumeText:
+          type: string
+
+    JobRequest:
+      type: object
+      required:
+        - title
+        - description
+        - requiredSkills
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        requiredSkills:
+          type: array
+          items:
+            type: string
+        minExperience:
+          type: integer
+
+    JobResponse:
+      allOf:
+        - $ref: '#/components/schemas/JobRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+
+    MatchResult:
+      type: object
+      properties:
+        jobId:
+          type: string
+        jobTitle:
+          type: string
+        matchScore:
+          type: number
+          format: float
