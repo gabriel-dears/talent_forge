@@ -19,7 +19,7 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
 
     @Override
     public ResponseEntity<CandidateResponse> candidatesIdGet(
-            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") String id
+            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id
     ) {
         CandidateResponse candidateResponse = candidateService.findById(id);
         return ResponseEntity.ok(candidateResponse);
