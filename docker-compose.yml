@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: talent-forge-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: talent_forge
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d talent_forge" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tf-net
+
+  app:
+    image: talent-forge-app
+    container_name: talent-forge-app
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/talent_forge
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+      - "5005:5005" # <-- Expose debug port
+    networks:
+      - tf-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  tf-net:
+    driver: bridge
