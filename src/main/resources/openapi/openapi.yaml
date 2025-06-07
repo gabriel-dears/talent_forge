@@ -24,14 +24,17 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
                 name:
                   type: string
+                  minLength: 1
                 email:
                   type: string
+                  minLength: 1
+                  format: email
                 skills:
                   type: array
                   items:

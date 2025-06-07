@@ -1,13 +1,16 @@
 package com.gabrieldears.talent_forge.application.service;
 
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
+import com.gabrieldears.talent_forge.application.exception.custom.EmailAlreadyExistsException;
 import com.gabrieldears.talent_forge.application.exception.custom.InvalidIdException;
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
+import com.gabrieldears.talent_forge.application.validator.CreateCandidateValidator;
 import com.gabrieldears.talent_forge.application.validator.RetrieveCandidateByIdValidator;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
+import com.gabrieldears.talent_forge.model.CandidatesPostRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +35,9 @@ class CandidateServiceTest {
 
     @Mock
     private RetrieveCandidateByIdValidator retrieveCandidateByIdValidator;
+
+    @Mock
+    private CreateCandidateValidator createCandidateValidator;
 
     @InjectMocks
     private CandidateService candidateService;
@@ -99,19 +105,29 @@ class CandidateServiceTest {
     }
 
     @Test
-    void shouldNotCreateCandidate() {
+    void shouldNotCreateCandidateWithExistingEmail() {
+        //Arrange
+        CandidatesPostRequest candidatesPostRequest = new CandidatesPostRequest();
+        candidatesPostRequest.setEmail("email");
+        doThrow(EmailAlreadyExistsException.class).when(createCandidateValidator).validate(any(CandidatesPostRequest.class));
+        // Act and Assert
+        Assertions.assertThrows(EmailAlreadyExistsException.class, () -> candidateService.create(candidatesPostRequest));
     }
 
     @Test
     void shouldNotFindCandidate() {
+        // Arrange
         doNothing().when(retrieveCandidateByIdValidator).validate(anyString());
         when(customCandidateRepository.findById(anyString())).thenReturn(Optional.empty());
+        // Act and Assert
         Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.findById("1"));
     }
 
     @Test
     void shouldThrowErrorWhenIdIsNullOrEmpty() {
+        // Arrange
         doThrow(InvalidIdException.class).when(retrieveCandidateByIdValidator).validate(isNull());
+        // Act and Assert
         Assertions.assertThrows(InvalidIdException.class, () -> candidateService.findById(null));
     }
 

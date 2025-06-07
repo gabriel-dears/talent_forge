@@ -19,4 +19,9 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     public Optional<Candidate> findById(String id) {
         return repository.findById(id);
     }
+
+    @Override
+    public boolean emailAlreadyExists(String email) {
+        return repository.existsByEmail(email);
+    }
 }

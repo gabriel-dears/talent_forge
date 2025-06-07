@@ -8,4 +8,6 @@ public interface CustomCandidateRepository {
 
     Optional<Candidate> findById(String id);
 
+    boolean emailAlreadyExists(String email);
+
 }
