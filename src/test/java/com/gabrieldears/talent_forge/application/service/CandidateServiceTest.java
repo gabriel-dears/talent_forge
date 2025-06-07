@@ -1,7 +1,9 @@
 package com.gabrieldears.talent_forge.application.service;
 
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
+import com.gabrieldears.talent_forge.application.exception.custom.InvalidIdException;
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
+import com.gabrieldears.talent_forge.application.validator.RetrieveCandidateByIdValidator;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CandidateServiceTest {
@@ -27,6 +29,9 @@ class CandidateServiceTest {
 
     @Mock
     private CandidateMapper candidateMapper;
+
+    @Mock
+    private RetrieveCandidateByIdValidator retrieveCandidateByIdValidator;
 
     @InjectMocks
     private CandidateService candidateService;
@@ -49,6 +54,7 @@ class CandidateServiceTest {
         mockResponse.setName("name");
         mockResponse.setExperienceYears(10);
         mockResponse.setSkills(skills);
+        doNothing().when(retrieveCandidateByIdValidator).validate(anyString());
         when(customCandidateRepository.findById(anyString())).thenReturn(Optional.of(candidate));
         when(candidateMapper.mapFromCandidateToCandidateResponse(candidate)).thenReturn(mockResponse);
         // Act
@@ -98,8 +104,15 @@ class CandidateServiceTest {
 
     @Test
     void shouldNotFindCandidate() {
+        doNothing().when(retrieveCandidateByIdValidator).validate(anyString());
         when(customCandidateRepository.findById(anyString())).thenReturn(Optional.empty());
         Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.findById("1"));
+    }
+
+    @Test
+    void shouldThrowErrorWhenIdIsNullOrEmpty() {
+        doThrow(InvalidIdException.class).when(retrieveCandidateByIdValidator).validate(isNull());
+        Assertions.assertThrows(InvalidIdException.class, () -> candidateService.findById(null));
     }
 
 }
