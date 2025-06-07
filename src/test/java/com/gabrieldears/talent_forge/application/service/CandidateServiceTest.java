@@ -94,6 +94,58 @@ class CandidateServiceTest {
 
     @Test
     void shouldCreateCandidate() {
+        // Arrange
+        CandidatesPostRequest candidatesPostRequest = getCandidatesPostRequestForSuccessScenario();
+        Candidate candidateMock = getRawCandidateForSuccessScenario();
+        CandidateResponse candidateResponseReturnMock = getCandidateResponseForSuccessScenario();
+        when(candidateMapper.mapFromCandidatePostRequestToCandidate(candidatesPostRequest)).thenReturn(candidateMock);
+        when(customCandidateRepository.create(any(Candidate.class))).thenReturn(candidateMock);
+        when(candidateMapper.mapFromCandidateToCandidateResponse(any(Candidate.class))).thenReturn(candidateResponseReturnMock);
+        // Act
+        CandidateResponse candidateResponse = candidateService.create(candidatesPostRequest);
+        // Assert
+        Assertions.assertNotNull(candidateResponse);
+        Assertions.assertNotNull(candidateResponse.getId());
+        Assertions.assertNotNull(candidateResponse.getEmail());
+        Assertions.assertNotNull(candidateResponse.getName());
+        Assertions.assertNotNull(candidateResponse.getExperienceYears());
+        Assertions.assertNotNull(candidateResponse.getSkills());
+        Assertions.assertEquals(candidateResponseReturnMock.getId(), candidateResponse.getId());
+        Assertions.assertEquals(candidateResponseReturnMock.getEmail(), candidateResponse.getEmail());
+        Assertions.assertEquals(candidateResponseReturnMock.getName(), candidateResponse.getName());
+        Assertions.assertEquals(10, candidateResponse.getExperienceYears());
+    }
+
+    private static CandidateResponse getCandidateResponseForSuccessScenario() {
+        Candidate candidateResponseMock = getRawCandidateForSuccessScenario();
+        candidateResponseMock.setId("1");
+        CandidateResponse candidateResponseReturnMock = new CandidateResponse();
+        candidateResponseReturnMock.setId(candidateResponseMock.getId());
+        candidateResponseReturnMock.setEmail(candidateResponseMock.getEmail());
+        candidateResponseReturnMock.setName(candidateResponseMock.getName());
+        candidateResponseReturnMock.setExperienceYears(candidateResponseMock.getExperienceYears());
+        candidateResponseReturnMock.setSkills(candidateResponseMock.getSkills());
+        return candidateResponseReturnMock;
+    }
+
+    private static Candidate getRawCandidateForSuccessScenario() {
+        Candidate candidate = new Candidate();
+        candidate.setEmail("email");
+        candidate.setName("name");
+        Resume resume = new Resume();
+        candidate.setResume(resume);
+        candidate.setExperienceYears(10);
+        candidate.setSkills(List.of("skill1", "skill2"));
+        return candidate;
+    }
+
+    private static CandidatesPostRequest getCandidatesPostRequestForSuccessScenario() {
+        CandidatesPostRequest candidatesPostRequest = new CandidatesPostRequest();
+        candidatesPostRequest.setEmail("email");
+        candidatesPostRequest.setName("name");
+        candidatesPostRequest.setExperienceYears(10);
+        candidatesPostRequest.setSkills(List.of("skill1", "skill2"));
+        return candidatesPostRequest;
     }
 
     @Test

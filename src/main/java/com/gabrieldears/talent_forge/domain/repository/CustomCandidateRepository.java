@@ -10,4 +10,5 @@ public interface CustomCandidateRepository {
 
     boolean emailAlreadyExists(String email);
 
+    Candidate create(Candidate candidate);
 }

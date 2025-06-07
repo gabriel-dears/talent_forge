@@ -31,7 +31,9 @@ public class CandidateService {
 
     public com.gabrieldears.talent_forge.model.CandidateResponse create(com.gabrieldears.talent_forge.model.CandidatesPostRequest candidatesPostRequest) {
         createCandidateValidator.validate(candidatesPostRequest);
-        return null;
+        Candidate candidate = candidateMapper.mapFromCandidatePostRequestToCandidate(candidatesPostRequest);
+        Candidate candidateAfterCreation = customCandidateRepository.create(candidate);
+        return candidateMapper.mapFromCandidateToCandidateResponse(candidateAfterCreation);
     }
 
 }

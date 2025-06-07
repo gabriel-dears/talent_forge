@@ -139,6 +139,7 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <useTags>true</useTags>
                                 <dateLibrary>java8</dateLibrary>
+                                <validationAnnotationPlacement>field</validationAnnotationPlacement>
                             </configOptions>
                         </configuration>
                     </execution>

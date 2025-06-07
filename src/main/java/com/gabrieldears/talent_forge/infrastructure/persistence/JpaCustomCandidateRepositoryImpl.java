@@ -24,4 +24,9 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     public boolean emailAlreadyExists(String email) {
         return repository.existsByEmail(email);
     }
+
+    @Override
+    public Candidate create(Candidate candidate) {
+        return repository.save(candidate);
+    }
 }
