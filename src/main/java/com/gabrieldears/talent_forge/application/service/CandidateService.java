@@ -19,7 +19,7 @@ public class CandidateService {
     }
 
     public com.gabrieldears.talent_forge.model.CandidateResponse findById(String id) {
-        Candidate candidate = customCandidateRepository.findById(id).orElseThrow(() -> new CandidateNotFoundException("Candidate not found!"));
+        Candidate candidate = customCandidateRepository.findById(id).orElseThrow(() -> new CandidateNotFoundException(String.format("Candidate with id %s not found", id)));
         return candidateMapper.mapFromCandidateToCandidateResponse(candidate);
     }
 }
