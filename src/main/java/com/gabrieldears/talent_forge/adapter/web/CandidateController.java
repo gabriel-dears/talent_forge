@@ -40,10 +40,10 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
     @Override
     @PostMapping(value = "/candidates", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateResponse> candidatesPost(
-            @Parameter(name = "name") @Valid @RequestParam(value = "name", required = false) String name,
-            @Parameter(name = "email") @Valid @RequestParam(value = "email", required = false) String email,
+            @Parameter(name = "name") @Valid @RequestParam(value = "name") String name,
+            @Parameter(name = "email") @Valid @RequestParam(value = "email") String email,
             @Parameter(name = "skills") @Valid @RequestParam(value = "skills", required = false) List<String> skills,
-            @Parameter(name = "experienceYears") @Valid @RequestParam(value = "experienceYears", required = false) Integer experienceYears,
+            @Parameter(name = "experienceYears") @Valid @RequestParam(value = "experienceYears") Integer experienceYears,
             @Parameter(name = "resume") @RequestPart(value = "resume", required = false) MultipartFile resume
     ) {
         CandidateRequestDto candidateRequestDto = new CandidateRequestDto(
