@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,7 +94,7 @@ class CandidateServiceTest {
     }
 
     @Test
-    void shouldCreateCandidate() {
+    void shouldCreateCandidate() throws IOException {
         // Arrange
         CandidateRequestDto candidatesPostRequest = getCandidatesPostRequestForSuccessScenario();
         Candidate candidateMock = getRawCandidateForSuccessScenario();
