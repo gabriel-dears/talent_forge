@@ -51,7 +51,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CandidateResponse'
-
+    put:
+      tags:
+        - Candidates
+      summary: Update an existing candidate
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                email:
+                  type: string
+                  minLength: 1
+                  format: email
+                skills:
+                  type: array
+                  items:
+                    type: string
+                experienceYears:
+                  type: integer
+                resume:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Candidate updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
   /candidates/{id}:
     get:
       tags:
@@ -70,6 +103,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CandidateResponse'
+    delete:
+      tags:
+        - Candidates
+      summary: Delete candidate by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Candidate data
 
   /jobs:
     post:
