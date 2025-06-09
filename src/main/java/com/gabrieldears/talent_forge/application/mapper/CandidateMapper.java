@@ -1,8 +1,8 @@
 package com.gabrieldears.talent_forge.application.mapper;
 
+import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
-import com.gabrieldears.talent_forge.model.CandidatesPostRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,12 +19,12 @@ public class CandidateMapper {
         return candidateResponse;
     }
 
-    public Candidate mapFromCandidatePostRequestToCandidate(CandidatesPostRequest candidatesPostRequest) {
+    public Candidate mapFromCandidatePostRequestToCandidate(CandidateRequestDto candidateRequestDto) {
         Candidate candidate = new Candidate();
-        candidate.setEmail(candidatesPostRequest.getEmail());
-        candidate.setName(candidatesPostRequest.getName());
-        candidate.setSkills(candidatesPostRequest.getSkills());
-        candidate.setExperienceYears(candidatesPostRequest.getExperienceYears());
+        candidate.setEmail(candidateRequestDto.email());
+        candidate.setName(candidateRequestDto.name());
+        candidate.setSkills(candidateRequestDto.skills());
+        candidate.setExperienceYears(candidateRequestDto.experienceYears());
         return candidate;
     }
 }

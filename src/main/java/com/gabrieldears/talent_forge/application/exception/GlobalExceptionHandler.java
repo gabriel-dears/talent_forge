@@ -2,6 +2,7 @@ package com.gabrieldears.talent_forge.application.exception;
 
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,8 +19,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<DefaultErrorResponse> handleException(HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, "An unexpected error occurred. Please, try again later!");
+    public ResponseEntity<DefaultErrorResponse> handleException(HttpServletRequest request, Exception ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, ex.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<DefaultErrorResponse> handleConstraintViolationException(HttpServletRequest request, Exception ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, request, ex.getMessage());
     }
 
     private ResponseEntity<DefaultErrorResponse> buildErrorResponse(HttpStatus status, HttpServletRequest request, String message) {

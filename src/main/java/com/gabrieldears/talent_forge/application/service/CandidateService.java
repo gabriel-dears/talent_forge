@@ -1,5 +1,6 @@
 package com.gabrieldears.talent_forge.application.service;
 
+import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
 import com.gabrieldears.talent_forge.application.validator.CreateCandidateValidator;
@@ -29,7 +30,7 @@ public class CandidateService {
         return candidateMapper.mapFromCandidateToCandidateResponse(candidate);
     }
 
-    public com.gabrieldears.talent_forge.model.CandidateResponse create(com.gabrieldears.talent_forge.model.CandidatesPostRequest candidatesPostRequest) {
+    public com.gabrieldears.talent_forge.model.CandidateResponse create(CandidateRequestDto candidatesPostRequest) {
         createCandidateValidator.validate(candidatesPostRequest);
         Candidate candidate = candidateMapper.mapFromCandidatePostRequestToCandidate(candidatesPostRequest);
         Candidate candidateAfterCreation = customCandidateRepository.create(candidate);

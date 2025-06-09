@@ -1,5 +1,6 @@
 package com.gabrieldears.talent_forge.application.service;
 
+import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
 import com.gabrieldears.talent_forge.application.exception.custom.EmailAlreadyExistsException;
 import com.gabrieldears.talent_forge.application.exception.custom.InvalidIdException;
@@ -10,7 +11,6 @@ import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
-import com.gabrieldears.talent_forge.model.CandidatesPostRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,7 +95,7 @@ class CandidateServiceTest {
     @Test
     void shouldCreateCandidate() {
         // Arrange
-        CandidatesPostRequest candidatesPostRequest = getCandidatesPostRequestForSuccessScenario();
+        CandidateRequestDto candidatesPostRequest = getCandidatesPostRequestForSuccessScenario();
         Candidate candidateMock = getRawCandidateForSuccessScenario();
         CandidateResponse candidateResponseReturnMock = getCandidateResponseForSuccessScenario();
         when(candidateMapper.mapFromCandidatePostRequestToCandidate(candidatesPostRequest)).thenReturn(candidateMock);
@@ -139,13 +139,14 @@ class CandidateServiceTest {
         return candidate;
     }
 
-    private static CandidatesPostRequest getCandidatesPostRequestForSuccessScenario() {
-        CandidatesPostRequest candidatesPostRequest = new CandidatesPostRequest();
-        candidatesPostRequest.setEmail("email");
-        candidatesPostRequest.setName("name");
-        candidatesPostRequest.setExperienceYears(10);
-        candidatesPostRequest.setSkills(List.of("skill1", "skill2"));
-        return candidatesPostRequest;
+    private static CandidateRequestDto getCandidatesPostRequestForSuccessScenario() {
+        return new CandidateRequestDto(
+                "name",
+                "email",
+                10,
+                List.of("skill1", "skill2"),
+                null
+        );
     }
 
     @Test
@@ -159,9 +160,14 @@ class CandidateServiceTest {
     @Test
     void shouldNotCreateCandidateWithExistingEmail() {
         //Arrange
-        CandidatesPostRequest candidatesPostRequest = new CandidatesPostRequest();
-        candidatesPostRequest.setEmail("email");
-        doThrow(EmailAlreadyExistsException.class).when(createCandidateValidator).validate(any(CandidatesPostRequest.class));
+        CandidateRequestDto candidatesPostRequest = new CandidateRequestDto(
+                null,
+                "email",
+                null,
+                null,
+                null
+        );
+        doThrow(EmailAlreadyExistsException.class).when(createCandidateValidator).validate(any(CandidateRequestDto.class));
         // Act and Assert
         Assertions.assertThrows(EmailAlreadyExistsException.class, () -> candidateService.create(candidatesPostRequest));
     }

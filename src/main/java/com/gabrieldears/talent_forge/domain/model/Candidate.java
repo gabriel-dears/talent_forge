@@ -1,11 +1,9 @@
 package com.gabrieldears.talent_forge.domain.model;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Candidate {
@@ -23,6 +21,13 @@ public class Candidate {
     private List<String> skills;
 
     private int experienceYears;
+
+    @PrePersist
+    public void generateId() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+    }
 
     public String getId() {
         return id;
