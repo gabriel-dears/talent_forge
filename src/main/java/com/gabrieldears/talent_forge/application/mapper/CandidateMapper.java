@@ -3,6 +3,7 @@ package com.gabrieldears.talent_forge.application.mapper;
 import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
 import com.gabrieldears.talent_forge.application.candidate.ResumeProcessor;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
+import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,10 @@ public class CandidateMapper {
         candidateResponse.setSkills(candidate.getSkills());
         candidateResponse.setExperienceYears(candidate.getExperienceYears());
         candidateResponse.setId(candidate.getId());
+        Resume resume = candidate.getResume();
+        if (resume != null) {
+            candidateResponse.resumeText(resume.getText());
+        }
         return candidateResponse;
     }
 
