@@ -2,16 +2,16 @@ package com.gabrieldears.talent_forge.application.validator;
 
 import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
 import com.gabrieldears.talent_forge.application.exception.custom.EmailAlreadyExistsException;
-import com.gabrieldears.talent_forge.application.service.CandidateService;
+import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateCandidateValidator {
 
-    private final CandidateService candidateService;
+    private final CustomCandidateRepository customCandidateRepository;
 
-    public CreateCandidateValidator(CandidateService candidateService) {
-        this.candidateService = candidateService;
+    public CreateCandidateValidator(CustomCandidateRepository customCandidateRepository) {
+        this.customCandidateRepository = customCandidateRepository;
     }
 
     public void validate(CandidateRequestDto candidateRequestDto) {
@@ -22,6 +22,6 @@ public class CreateCandidateValidator {
     }
 
     private boolean emailAlreadyExists(String email) {
-        return candidateService.emailAlreadyExists(email);
+        return customCandidateRepository.emailAlreadyExists(email);
     }
 }
