@@ -90,40 +90,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CandidateResponse'
-    put:
-      tags:
-        - Candidates
-      summary: Update an existing candidate
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  minLength: 1
-                email:
-                  type: string
-                  minLength: 1
-                  format: email
-                skills:
-                  type: array
-                  items:
-                    type: string
-                experienceYears:
-                  type: integer
-                resume:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: Candidate updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CandidateResponse'
   /candidates/{id}:
     get:
       tags:
@@ -155,7 +121,46 @@ paths:
       responses:
         '200':
           description: Candidate data
-
+    put:
+      tags:
+        - Candidates
+      summary: Update an existing candidate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                email:
+                  type: string
+                  minLength: 1
+                  format: email
+                skills:
+                  type: array
+                  items:
+                    type: string
+                experienceYears:
+                  type: integer
+                resume:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Candidate updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResponse'
   /jobs:
     post:
       tags:

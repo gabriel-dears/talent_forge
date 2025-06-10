@@ -17,4 +17,8 @@ public interface CustomCandidateRepository {
     void deleteById(String id);
 
     com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size);
+
+    Candidate update(Candidate candidateToBeUpdated);
+
+    boolean emailAlreadyExistsForAnotherCandidate(String email, String id);
 }

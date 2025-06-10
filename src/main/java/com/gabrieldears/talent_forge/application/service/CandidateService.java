@@ -5,6 +5,7 @@ import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFo
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
 import com.gabrieldears.talent_forge.application.validator.CreateCandidateValidator;
 import com.gabrieldears.talent_forge.application.validator.RetrieveCandidateByIdValidator;
+import com.gabrieldears.talent_forge.application.validator.UpdateCandidateValidator;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,14 @@ public class CandidateService {
     private final CandidateMapper candidateMapper;
     private final RetrieveCandidateByIdValidator retrieveCandidateByIdValidator;
     private final CreateCandidateValidator createCandidateValidator;
+    private final UpdateCandidateValidator updateCandidateValidator;
 
-    public CandidateService(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator) {
+    public CandidateService(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator) {
         this.customCandidateRepository = customCandidateRepository;
         this.candidateMapper = candidateMapper;
         this.retrieveCandidateByIdValidator = retrieveCandidateByIdValidator;
         this.createCandidateValidator = createCandidateValidator;
+        this.updateCandidateValidator = updateCandidateValidator;
     }
 
     public com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size) {
@@ -30,7 +33,7 @@ public class CandidateService {
 
     public com.gabrieldears.talent_forge.model.CandidateResponse findById(String id) {
         retrieveCandidateByIdValidator.validate(id);
-        Candidate candidate = customCandidateRepository.findById(id).orElseThrow(() -> new CandidateNotFoundException(String.format("Candidate with id %s not found", id)));
+        Candidate candidate = findByByIdFromRepo(id);
         return candidateMapper.mapFromCandidateToCandidateResponse(candidate);
     }
 
@@ -46,9 +49,34 @@ public class CandidateService {
     }
 
     public void delete(String id) {
+        verifyCandidateByIdFromRepo(id);
+        customCandidateRepository.deleteById(id);
+    }
+
+    public com.gabrieldears.talent_forge.model.CandidateResponse update(CandidateRequestDto candidateRequestDto, String id) {
+        verifyCandidateByIdFromRepo(id);
+        updateCandidateValidator.validate(candidateRequestDto, id);
+        Candidate candidateToBeUpdated = candidateMapper.mapFromCandidatePutRequestToCandidate(candidateRequestDto, id);
+        Candidate candidateAfterUpdate = customCandidateRepository.update(candidateToBeUpdated);
+        return candidateMapper.mapFromCandidateToCandidateResponse(candidateAfterUpdate);
+    }
+
+    public boolean emailAlreadyExists(String email) {
+        return customCandidateRepository.emailAlreadyExists(email);
+    }
+
+    public boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
+        return customCandidateRepository.emailAlreadyExistsForAnotherCandidate(email, id);
+    }
+
+    private void verifyCandidateByIdFromRepo(String id) {
         if (!existsById(id)) {
             throw new CandidateNotFoundException(String.format("Candidate with id %s not found", id));
         }
-        customCandidateRepository.deleteById(id);
     }
+
+    private Candidate findByByIdFromRepo(String id) {
+        return customCandidateRepository.findById(id).orElseThrow(() -> new CandidateNotFoundException(String.format("Candidate with id %s not found", id)));
+    }
+
 }

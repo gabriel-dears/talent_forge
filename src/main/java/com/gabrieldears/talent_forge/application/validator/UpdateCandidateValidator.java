@@ -6,22 +6,22 @@ import com.gabrieldears.talent_forge.application.service.CandidateService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CreateCandidateValidator {
+public class UpdateCandidateValidator {
 
     private final CandidateService candidateService;
 
-    public CreateCandidateValidator(CandidateService candidateService) {
+    public UpdateCandidateValidator(CandidateService candidateService) {
         this.candidateService = candidateService;
     }
 
-    public void validate(CandidateRequestDto candidateRequestDto) {
+    public void validate(CandidateRequestDto candidateRequestDto, String id) {
         String candidateEmail = candidateRequestDto.email();
-        if (emailAlreadyExists(candidateEmail)) {
-            throw new EmailAlreadyExistsException(String.format("Candidate with email %s already exists", candidateEmail));
+        if (emailAlreadyExistsForAnotherCandidate(candidateEmail, id)) {
+            throw new EmailAlreadyExistsException(String.format("Email %s is not available", candidateEmail));
         }
     }
 
-    private boolean emailAlreadyExists(String email) {
-        return candidateService.emailAlreadyExists(email);
+    private boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
+        return candidateService.emailAlreadyExistsForAnotherCandidate(email, id);
     }
 }

@@ -14,44 +14,48 @@ import java.util.Optional;
 @Repository
 public class JpaCustomCandidateRepositoryImpl implements CustomCandidateRepository {
 
-    private final JpaCandidateRepository repository;
     private final CandidateMapper candidateMapper;
+    private final JpaCandidateRepository jpaCandidateRepository;
 
-    public JpaCustomCandidateRepositoryImpl(JpaCandidateRepository repository, CandidateMapper candidateMapper) {
-        this.repository = repository;
+    public JpaCustomCandidateRepositoryImpl(CandidateMapper candidateMapper, JpaCandidateRepository jpaCandidateRepository) {
         this.candidateMapper = candidateMapper;
+        this.jpaCandidateRepository = jpaCandidateRepository;
     }
 
     @Override
     public Optional<Candidate> findById(String id) {
-        return repository.findById(id);
+        return jpaCandidateRepository.findById(id);
     }
 
     @Override
     public boolean emailAlreadyExists(String email) {
-        return repository.existsByEmail(email);
+        return jpaCandidateRepository.existsByEmail(email);
     }
 
     @Override
     public boolean candidateExists(String candidateId) {
-        return repository.existsById(candidateId);
+        return jpaCandidateRepository.existsById(candidateId);
     }
 
     @Override
     public Candidate create(Candidate candidate) {
-        return repository.save(candidate);
+        return jpaCandidateRepository.save(candidate);
     }
 
     @Override
     public void deleteById(String id) {
-        repository.deleteById(id);
+        jpaCandidateRepository.deleteById(id);
     }
 
     @Override
     public com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Candidate> candidatesPage = repository.findAll(pageRequest);
+        Page<Candidate> candidatesPage = jpaCandidateRepository.findAll(pageRequest);
         List<CandidateResponse> candidateResponseList = candidatesPage.getContent().stream().map(candidateMapper::mapFromCandidateToCandidateResponse).toList();
+        return getCandidatesGet200Response(candidateResponseList, candidatesPage);
+    }
+
+    private static com.gabrieldears.talent_forge.model.CandidatesGet200Response getCandidatesGet200Response(List<CandidateResponse> candidateResponseList, Page<Candidate> candidatesPage) {
         com.gabrieldears.talent_forge.model.CandidatesGet200Response candidatesGet200Response = new com.gabrieldears.talent_forge.model.CandidatesGet200Response();
         candidatesGet200Response.setContent(candidateResponseList);
         candidatesGet200Response.setTotalElements((int) candidatesPage.getTotalElements());
@@ -59,5 +63,15 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
         candidatesGet200Response.setNumber(candidatesPage.getNumber());
         candidatesGet200Response.setSize(candidatesPage.getSize());
         return candidatesGet200Response;
+    }
+
+    @Override
+    public Candidate update(Candidate candidateToBeUpdated) {
+        return jpaCandidateRepository.save(candidateToBeUpdated);
+    }
+
+    @Override
+    public boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
+        return jpaCandidateRepository.existsByEmailAndIdNot(email, id);
     }
 }

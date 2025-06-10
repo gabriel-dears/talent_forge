@@ -40,5 +40,16 @@ public class CandidateMapper {
         return candidate;
     }
 
+    public Candidate mapFromCandidatePutRequestToCandidate(CandidateRequestDto candidateRequestDto, String id) {
+        Candidate candidate = new Candidate();
+        candidate.setId(id);
+        candidate.setEmail(candidateRequestDto.email());
+        candidate.setName(candidateRequestDto.name());
+        candidate.setSkills(candidateRequestDto.skills());
+        candidate.setExperienceYears(candidateRequestDto.experienceYears());
+        resumeProcessor.processResume(candidateRequestDto, candidate);
+        return candidate;
+    }
+
 
 }

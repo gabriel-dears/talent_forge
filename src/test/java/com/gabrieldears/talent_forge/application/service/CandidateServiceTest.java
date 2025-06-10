@@ -7,6 +7,7 @@ import com.gabrieldears.talent_forge.application.exception.custom.InvalidIdExcep
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
 import com.gabrieldears.talent_forge.application.validator.CreateCandidateValidator;
 import com.gabrieldears.talent_forge.application.validator.RetrieveCandidateByIdValidator;
+import com.gabrieldears.talent_forge.application.validator.UpdateCandidateValidator;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
@@ -39,6 +40,9 @@ class CandidateServiceTest {
 
     @Mock
     private CreateCandidateValidator createCandidateValidator;
+
+    @Mock
+    private UpdateCandidateValidator updateCandidateValidator;
 
     @InjectMocks
     private CandidateService candidateService;
@@ -106,6 +110,19 @@ class CandidateServiceTest {
 
     @Test
     void shouldUpdateCandidate() {
+        // Arrange
+        CandidateRequestDto candidateRequestDto = mock(CandidateRequestDto.class);
+        Candidate candidate = mock(Candidate.class);
+        CandidateResponse candidateResponse = mock(CandidateResponse.class);
+        when(customCandidateRepository.candidateExists(anyString())).thenReturn(true);
+        doNothing().when(updateCandidateValidator).validate(any(CandidateRequestDto.class), anyString());
+        when(candidateMapper.mapFromCandidatePutRequestToCandidate(any(CandidateRequestDto.class), anyString())).thenReturn(candidate);
+        when(customCandidateRepository.update(any(Candidate.class))).thenReturn(candidate);
+        when(candidateMapper.mapFromCandidateToCandidateResponse(any(Candidate.class))).thenReturn(candidateResponse);
+        // Act
+        CandidateResponse updatedCandidateResponse = candidateService.update(candidateRequestDto, "");
+        // Assert
+        Assertions.assertNotNull(updatedCandidateResponse);
     }
 
     @Test
@@ -132,41 +149,12 @@ class CandidateServiceTest {
         Assertions.assertEquals(10, candidateResponse.getExperienceYears());
     }
 
-    private static CandidateResponse getCandidateResponseForSuccessScenario() {
-        Candidate candidateResponseMock = getRawCandidateForSuccessScenario();
-        candidateResponseMock.setId("1");
-        CandidateResponse candidateResponseReturnMock = new CandidateResponse();
-        candidateResponseReturnMock.setId(candidateResponseMock.getId());
-        candidateResponseReturnMock.setEmail(candidateResponseMock.getEmail());
-        candidateResponseReturnMock.setName(candidateResponseMock.getName());
-        candidateResponseReturnMock.setExperienceYears(candidateResponseMock.getExperienceYears());
-        candidateResponseReturnMock.setSkills(candidateResponseMock.getSkills());
-        return candidateResponseReturnMock;
-    }
-
-    private static Candidate getRawCandidateForSuccessScenario() {
-        Candidate candidate = new Candidate();
-        candidate.setEmail("email");
-        candidate.setName("name");
-        Resume resume = new Resume();
-        candidate.setResume(resume);
-        candidate.setExperienceYears(10);
-        candidate.setSkills(List.of("skill1", "skill2"));
-        return candidate;
-    }
-
-    private static CandidateRequestDto getCandidatesPostRequestForSuccessScenario() {
-        return new CandidateRequestDto(
-                "name",
-                "email",
-                10,
-                List.of("skill1", "skill2"),
-                null
-        );
-    }
-
     @Test
     void shouldNotUpdateCandidate() {
+        // Arrange
+        when(customCandidateRepository.candidateExists(anyString())).thenReturn(false);
+        // Act and Assert
+        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.update(null, ""));
     }
 
     @Test
@@ -207,6 +195,39 @@ class CandidateServiceTest {
         doThrow(InvalidIdException.class).when(retrieveCandidateByIdValidator).validate(isNull());
         // Act and Assert
         Assertions.assertThrows(InvalidIdException.class, () -> candidateService.findById(null));
+    }
+
+    private static CandidateResponse getCandidateResponseForSuccessScenario() {
+        Candidate candidateResponseMock = getRawCandidateForSuccessScenario();
+        candidateResponseMock.setId("1");
+        CandidateResponse candidateResponseReturnMock = new CandidateResponse();
+        candidateResponseReturnMock.setId(candidateResponseMock.getId());
+        candidateResponseReturnMock.setEmail(candidateResponseMock.getEmail());
+        candidateResponseReturnMock.setName(candidateResponseMock.getName());
+        candidateResponseReturnMock.setExperienceYears(candidateResponseMock.getExperienceYears());
+        candidateResponseReturnMock.setSkills(candidateResponseMock.getSkills());
+        return candidateResponseReturnMock;
+    }
+
+    private static Candidate getRawCandidateForSuccessScenario() {
+        Candidate candidate = new Candidate();
+        candidate.setEmail("email");
+        candidate.setName("name");
+        Resume resume = new Resume();
+        candidate.setResume(resume);
+        candidate.setExperienceYears(10);
+        candidate.setSkills(List.of("skill1", "skill2"));
+        return candidate;
+    }
+
+    private static CandidateRequestDto getCandidatesPostRequestForSuccessScenario() {
+        return new CandidateRequestDto(
+                "name",
+                "email",
+                10,
+                List.of("skill1", "skill2"),
+                null
+        );
     }
 
 }

@@ -79,4 +79,24 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
         return ResponseEntity.created(location).body(candidateResponse);
     }
 
+    @PutMapping(value = "/candidates/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Override
+    public ResponseEntity<CandidateResponse> candidatesIdPut(
+            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id,
+            @Parameter(name = "name") @Valid @RequestParam(value = "name") String name,
+            @Parameter(name = "email") @Valid @RequestParam(value = "email") String email,
+            @Parameter(name = "skills") @Valid @RequestPart(value = "skills", required = false) List<String> skills,
+            @Parameter(name = "experienceYears") @Valid @RequestParam(value = "experienceYears") Integer experienceYears,
+            @Parameter(name = "resume") @RequestPart(value = "resume", required = false) MultipartFile resume
+    ) {
+        CandidateRequestDto candidateRequestDto = new CandidateRequestDto(
+                name,
+                email,
+                experienceYears,
+                skills,
+                resume
+        );
+        beanInputValidationUtils.validate(candidateRequestDto);
+        return ResponseEntity.ok(candidateService.update(candidateRequestDto, id));
+    }
 }
