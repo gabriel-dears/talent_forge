@@ -161,6 +161,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CandidateResponse'
+
   /jobs:
     post:
       tags:
@@ -179,7 +180,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobResponse'
-
+    get:
+      tags:
+        - Jobs
+      summary: Get all jobs
+      responses:
+        '200':
+          description: List of jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobResponse'
   /jobs/{id}:
     get:
       tags:
@@ -198,6 +211,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobResponse'
+        '404':
+          description: Job not found
+    put:
+      tags:
+        - Jobs
+      summary: Update job by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobRequest'
+      responses:
+        '200':
+          description: Job updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+        '404':
+          description: Job not found
+    delete:
+      tags:
+        - Jobs
+      summary: Delete job by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Job deleted
+        '404':
+          description: Job not found
 
   /match/{candidateId}:
     post:
