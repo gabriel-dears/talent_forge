@@ -17,6 +17,45 @@ tags:
 
 paths:
   /candidates:
+    get:
+      tags:
+        - Candidates
+      summary: List all candidates with pagination
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Page number (starts at 0)
+        - in: query
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: Number of candidates per page
+      responses:
+        '200':
+          description: A paginated list of candidates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CandidateResponse'
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
     post:
       tags:
         - Candidates

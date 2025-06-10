@@ -24,6 +24,10 @@ public class CandidateService {
         this.createCandidateValidator = createCandidateValidator;
     }
 
+    public com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size) {
+        return customCandidateRepository.findAll(page, size);
+    }
+
     public com.gabrieldears.talent_forge.model.CandidateResponse findById(String id) {
         retrieveCandidateByIdValidator.validate(id);
         Candidate candidate = customCandidateRepository.findById(id).orElseThrow(() -> new CandidateNotFoundException(String.format("Candidate with id %s not found", id)));
@@ -42,7 +46,7 @@ public class CandidateService {
     }
 
     public void delete(String id) {
-        if( !existsById(id) ) {
+        if (!existsById(id)) {
             throw new CandidateNotFoundException(String.format("Candidate with id %s not found", id));
         }
         customCandidateRepository.deleteById(id);

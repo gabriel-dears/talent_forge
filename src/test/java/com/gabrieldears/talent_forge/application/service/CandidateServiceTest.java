@@ -11,6 +11,7 @@ import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
+import com.gabrieldears.talent_forge.model.CandidatesGet200Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,6 +83,14 @@ class CandidateServiceTest {
 
     @Test
     void shouldFindAllCandidates() {
+        // Arrange
+        Integer page = 0;
+        Integer size = 10;
+        when(customCandidateRepository.findAll(page, size)).thenReturn(new CandidatesGet200Response());
+        // Act
+        CandidatesGet200Response findAllCandidatesResponse = candidateService.findAll(page, size);
+        // Assert
+        Assertions.assertNotNull(findAllCandidatesResponse);
     }
 
     @Test

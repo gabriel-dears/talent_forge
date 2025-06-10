@@ -15,4 +15,6 @@ public interface CustomCandidateRepository {
     Candidate create(Candidate candidate);
 
     void deleteById(String id);
+
+    com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size);
 }
