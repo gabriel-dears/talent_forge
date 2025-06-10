@@ -10,5 +10,9 @@ public interface CustomCandidateRepository {
 
     boolean emailAlreadyExists(String email);
 
+    boolean candidateExists(String candidateId);
+
     Candidate create(Candidate candidate);
+
+    void deleteById(String id);
 }

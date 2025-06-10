@@ -156,6 +156,10 @@ class CandidateServiceTest {
 
     @Test
     void shouldNotDeleteCandidate() {
+        // Arrange
+        when(customCandidateRepository.candidateExists(anyString())).thenReturn(false);
+        // Act and Assert
+        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.delete("1"));
     }
 
     @Test

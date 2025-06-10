@@ -26,7 +26,17 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     }
 
     @Override
+    public boolean candidateExists(String candidateId) {
+        return repository.existsById(candidateId);
+    }
+
+    @Override
     public Candidate create(Candidate candidate) {
         return repository.save(candidate);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        repository.deleteById(id);
     }
 }

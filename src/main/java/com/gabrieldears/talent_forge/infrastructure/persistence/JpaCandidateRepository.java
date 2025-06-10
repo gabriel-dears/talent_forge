@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaCandidateRepository extends JpaRepository<Candidate, String> {
     boolean existsByEmail(String email);
+    boolean existsById(String id);
 }

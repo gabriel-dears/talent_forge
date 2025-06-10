@@ -37,4 +37,14 @@ public class CandidateService {
         return candidateMapper.mapFromCandidateToCandidateResponse(candidateAfterCreation);
     }
 
+    public boolean existsById(String id) {
+        return customCandidateRepository.candidateExists(id);
+    }
+
+    public void delete(String id) {
+        if( !existsById(id) ) {
+            throw new CandidateNotFoundException(String.format("Candidate with id %s not found", id));
+        }
+        customCandidateRepository.deleteById(id);
+    }
 }
