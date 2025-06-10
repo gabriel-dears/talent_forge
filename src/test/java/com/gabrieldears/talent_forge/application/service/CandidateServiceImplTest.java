@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CandidateServiceTest {
+class CandidateServiceImplTest {
 
     @Mock
     private CustomCandidateRepository customCandidateRepository;
@@ -45,7 +45,7 @@ class CandidateServiceTest {
     private UpdateCandidateValidator updateCandidateValidator;
 
     @InjectMocks
-    private CandidateService candidateService;
+    private CandidateServiceImpl candidateServiceImpl;
 
     @Test
     void shouldFindCandidateById() {
@@ -69,7 +69,7 @@ class CandidateServiceTest {
         when(customCandidateRepository.findById(anyString())).thenReturn(Optional.of(candidate));
         when(candidateMapper.mapFromCandidateToCandidateResponse(candidate)).thenReturn(mockResponse);
         // Act
-        CandidateResponse candidateResponse = candidateService.findById("1");
+        CandidateResponse candidateResponse = candidateServiceImpl.findById("1");
         // Assert
         Assertions.assertNotNull(candidateResponse);
         Assertions.assertNotNull(candidateResponse.getId());
@@ -92,7 +92,7 @@ class CandidateServiceTest {
         Integer size = 10;
         when(customCandidateRepository.findAll(page, size)).thenReturn(new CandidatesGet200Response());
         // Act
-        CandidatesGet200Response findAllCandidatesResponse = candidateService.findAll(page, size);
+        CandidatesGet200Response findAllCandidatesResponse = candidateServiceImpl.findAll(page, size);
         // Assert
         Assertions.assertNotNull(findAllCandidatesResponse);
     }
@@ -102,7 +102,7 @@ class CandidateServiceTest {
         // Arrange
         when(customCandidateRepository.candidateExists(anyString())).thenReturn(true);
         // Act
-        candidateService.delete("anyValidUUID");
+        candidateServiceImpl.delete("anyValidUUID");
         // Assert
         verify(customCandidateRepository, times(1)).candidateExists(anyString());
         verify(customCandidateRepository, times(1)).deleteById(anyString());
@@ -120,7 +120,7 @@ class CandidateServiceTest {
         when(customCandidateRepository.update(any(Candidate.class))).thenReturn(candidate);
         when(candidateMapper.mapFromCandidateToCandidateResponse(any(Candidate.class))).thenReturn(candidateResponse);
         // Act
-        CandidateResponse updatedCandidateResponse = candidateService.update(candidateRequestDto, "");
+        CandidateResponse updatedCandidateResponse = candidateServiceImpl.update(candidateRequestDto, "");
         // Assert
         Assertions.assertNotNull(updatedCandidateResponse);
     }
@@ -135,7 +135,7 @@ class CandidateServiceTest {
         when(customCandidateRepository.create(any(Candidate.class))).thenReturn(candidateMock);
         when(candidateMapper.mapFromCandidateToCandidateResponse(any(Candidate.class))).thenReturn(candidateResponseReturnMock);
         // Act
-        CandidateResponse candidateResponse = candidateService.create(candidatesPostRequest);
+        CandidateResponse candidateResponse = candidateServiceImpl.create(candidatesPostRequest);
         // Assert
         Assertions.assertNotNull(candidateResponse);
         Assertions.assertNotNull(candidateResponse.getId());
@@ -154,7 +154,7 @@ class CandidateServiceTest {
         // Arrange
         when(customCandidateRepository.candidateExists(anyString())).thenReturn(false);
         // Act and Assert
-        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.update(null, ""));
+        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateServiceImpl.update(null, ""));
     }
 
     @Test
@@ -162,7 +162,7 @@ class CandidateServiceTest {
         // Arrange
         when(customCandidateRepository.candidateExists(anyString())).thenReturn(false);
         // Act and Assert
-        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.delete("1"));
+        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateServiceImpl.delete("1"));
     }
 
     @Test
@@ -177,7 +177,7 @@ class CandidateServiceTest {
         );
         doThrow(EmailAlreadyExistsException.class).when(createCandidateValidator).validate(any(CandidateRequestDto.class));
         // Act and Assert
-        Assertions.assertThrows(EmailAlreadyExistsException.class, () -> candidateService.create(candidatesPostRequest));
+        Assertions.assertThrows(EmailAlreadyExistsException.class, () -> candidateServiceImpl.create(candidatesPostRequest));
     }
 
     @Test
@@ -186,7 +186,7 @@ class CandidateServiceTest {
         doNothing().when(retrieveCandidateByIdValidator).validate(anyString());
         when(customCandidateRepository.findById(anyString())).thenReturn(Optional.empty());
         // Act and Assert
-        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateService.findById("1"));
+        Assertions.assertThrows(CandidateNotFoundException.class, () -> candidateServiceImpl.findById("1"));
     }
 
     @Test
@@ -194,7 +194,7 @@ class CandidateServiceTest {
         // Arrange
         doThrow(InvalidIdException.class).when(retrieveCandidateByIdValidator).validate(isNull());
         // Act and Assert
-        Assertions.assertThrows(InvalidIdException.class, () -> candidateService.findById(null));
+        Assertions.assertThrows(InvalidIdException.class, () -> candidateServiceImpl.findById(null));
     }
 
     private static CandidateResponse getCandidateResponseForSuccessScenario() {

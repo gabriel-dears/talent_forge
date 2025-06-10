@@ -1,8 +1,9 @@
 package com.gabrieldears.talent_forge.adapter.web;
 
 import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
-import com.gabrieldears.talent_forge.application.service.CandidateService;
+import com.gabrieldears.talent_forge.application.service.CandidateServiceImpl;
 import com.gabrieldears.talent_forge.application.validator.BeanInputValidationUtils;
+import com.gabrieldears.talent_forge.domain.service.CandidateService;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -25,7 +26,7 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
     private final CandidateService candidateService;
     private final BeanInputValidationUtils beanInputValidationUtils;
 
-    public CandidateController(CandidateService candidateService, BeanInputValidationUtils beanInputValidationUtils) {
+    public CandidateController(CandidateServiceImpl candidateService, BeanInputValidationUtils beanInputValidationUtils) {
         this.candidateService = candidateService;
         this.beanInputValidationUtils = beanInputValidationUtils;
     }

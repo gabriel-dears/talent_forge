@@ -8,10 +8,11 @@ import com.gabrieldears.talent_forge.application.validator.RetrieveCandidateById
 import com.gabrieldears.talent_forge.application.validator.UpdateCandidateValidator;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
+import com.gabrieldears.talent_forge.domain.service.CandidateService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CandidateService {
+public class CandidateServiceImpl implements CandidateService {
 
     private final CustomCandidateRepository customCandidateRepository;
     private final CandidateMapper candidateMapper;
@@ -19,7 +20,7 @@ public class CandidateService {
     private final CreateCandidateValidator createCandidateValidator;
     private final UpdateCandidateValidator updateCandidateValidator;
 
-    public CandidateService(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator) {
+    public CandidateServiceImpl(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator) {
         this.customCandidateRepository = customCandidateRepository;
         this.candidateMapper = candidateMapper;
         this.retrieveCandidateByIdValidator = retrieveCandidateByIdValidator;
@@ -27,16 +28,19 @@ public class CandidateService {
         this.updateCandidateValidator = updateCandidateValidator;
     }
 
+    @Override
     public com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size) {
         return customCandidateRepository.findAll(page, size);
     }
 
+    @Override
     public com.gabrieldears.talent_forge.model.CandidateResponse findById(String id) {
         retrieveCandidateByIdValidator.validate(id);
         Candidate candidate = findByByIdFromRepo(id);
         return candidateMapper.mapFromCandidateToCandidateResponse(candidate);
     }
 
+    @Override
     public com.gabrieldears.talent_forge.model.CandidateResponse create(CandidateRequestDto candidatesPostRequest) {
         createCandidateValidator.validate(candidatesPostRequest);
         Candidate candidate = candidateMapper.mapFromCandidatePostRequestToCandidate(candidatesPostRequest);
@@ -44,15 +48,18 @@ public class CandidateService {
         return candidateMapper.mapFromCandidateToCandidateResponse(candidateAfterCreation);
     }
 
+    @Override
     public boolean existsById(String id) {
         return customCandidateRepository.candidateExists(id);
     }
 
+    @Override
     public void delete(String id) {
         verifyCandidateByIdFromRepo(id);
         customCandidateRepository.deleteById(id);
     }
 
+    @Override
     public com.gabrieldears.talent_forge.model.CandidateResponse update(CandidateRequestDto candidateRequestDto, String id) {
         verifyCandidateByIdFromRepo(id);
         updateCandidateValidator.validate(candidateRequestDto, id);
