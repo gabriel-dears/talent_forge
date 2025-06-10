@@ -61,14 +61,6 @@ public class CandidateService {
         return candidateMapper.mapFromCandidateToCandidateResponse(candidateAfterUpdate);
     }
 
-    public boolean emailAlreadyExists(String email) {
-        return customCandidateRepository.emailAlreadyExists(email);
-    }
-
-    public boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
-        return customCandidateRepository.emailAlreadyExistsForAnotherCandidate(email, id);
-    }
-
     private void verifyCandidateByIdFromRepo(String id) {
         if (!existsById(id)) {
             throw new CandidateNotFoundException(String.format("Candidate with id %s not found", id));
