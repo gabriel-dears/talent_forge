@@ -85,7 +85,7 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
             @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id,
             @Parameter(name = "name") @Valid @RequestParam(value = "name") String name,
             @Parameter(name = "email") @Valid @RequestParam(value = "email") String email,
-            @Parameter(name = "skills") @Valid @RequestPart(value = "skills", required = false) List<String> skills,
+            @Parameter(name = "skills") @Valid @RequestParam(value = "skills", required = false) List<String> skills,
             @Parameter(name = "experienceYears") @Valid @RequestParam(value = "experienceYears") Integer experienceYears,
             @Parameter(name = "resume") @RequestPart(value = "resume", required = false) MultipartFile resume
     ) {
