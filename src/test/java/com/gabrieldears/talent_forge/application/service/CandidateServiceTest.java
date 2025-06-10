@@ -86,6 +86,13 @@ class CandidateServiceTest {
 
     @Test
     void shouldDeleteCandidate() {
+        // Arrange
+        when(customCandidateRepository.candidateExists(anyString())).thenReturn(true);
+        // Act
+        candidateService.delete("anyValidUUID");
+        // Assert
+        verify(customCandidateRepository, times(1)).candidateExists(anyString());
+        verify(customCandidateRepository, times(1)).deleteById(anyString());
     }
 
     @Test
