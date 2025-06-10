@@ -1,6 +1,7 @@
 package com.gabrieldears.talent_forge.application.exception;
 
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
+import com.gabrieldears.talent_forge.application.exception.custom.EmailAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, ex.getMessage());
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler({ConstraintViolationException.class, EmailAlreadyExistsException.class})
     public ResponseEntity<DefaultErrorResponse> handleConstraintViolationException(HttpServletRequest request, Exception ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, request, ex.getMessage());
     }
