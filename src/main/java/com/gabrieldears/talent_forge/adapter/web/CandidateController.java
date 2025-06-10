@@ -38,6 +38,14 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
     }
 
     @Override
+    public ResponseEntity<Void> candidatesIdDelete(
+            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id
+    ) {
+        candidateService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     @PostMapping(value = "/candidates", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateResponse> candidatesPost(
             @Parameter(name = "name") @Valid @RequestParam(value = "name") String name,
