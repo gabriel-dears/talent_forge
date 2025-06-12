@@ -1,5 +1,6 @@
 package com.gabrieldears.talent_forge.application.service;
 
+import com.gabrieldears.talent_forge.application.mapper.JobMapper;
 import com.gabrieldears.talent_forge.domain.repository.CustomJobRepository;
 import com.gabrieldears.talent_forge.model.JobResponse;
 import com.gabrieldears.talent_forge.model.JobsGet200Response;
@@ -10,9 +11,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,6 +24,9 @@ class JobServiceImplTest {
 
     @Mock
     private CustomJobRepository customJobRepository;
+
+    @Mock
+    JobMapper jobMapper;
 
     @InjectMocks
     private JobServiceImpl jobService;
@@ -36,4 +43,14 @@ class JobServiceImplTest {
         Assertions.assertEquals(1, jobsGet200Response.getContent().size());
         Assertions.assertNotNull(jobsGet200Response.getContent().getFirst());
     }
+
+    @Test
+    void shouldNotCreateJobBecauseTitleIsNull() {
+        // Arrange
+        when(jobMapper.fromJobRequestToJob(isNull())).thenReturn(null);
+        doThrow(ConstraintViolationException.class).when(customJobRepository).create(null);
+        // Act and Assert
+        Assertions.assertThrows(ConstraintViolationException.class, () -> jobService.create(null));
+    }
+
 }

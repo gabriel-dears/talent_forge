@@ -1,6 +1,7 @@
 package com.gabrieldears.talent_forge.adapter.web;
 
 import com.gabrieldears.talent_forge.domain.service.JobService;
+import com.gabrieldears.talent_forge.model.JobResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.net.URI;
 
 @RestController
 public class JobController implements com.gabrieldears.talent_forge.api.JobsApi {
@@ -60,6 +63,8 @@ public class JobController implements com.gabrieldears.talent_forge.api.JobsApi 
             @Parameter(name = "JobRequest", required = true) @Valid @RequestBody com.gabrieldears.talent_forge.model.JobRequest
                     jobRequest
     ) {
-        return null;
+        JobResponse jobResponse = jobService.create(jobRequest);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(jobResponse.getId()).toUri();
+        return ResponseEntity.created(uri).body(jobResponse);
     }
 }

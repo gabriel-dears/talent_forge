@@ -1,6 +1,7 @@
 package com.gabrieldears.talent_forge.application.mapper;
 
 import com.gabrieldears.talent_forge.domain.model.Job;
+import com.gabrieldears.talent_forge.model.JobRequest;
 import com.gabrieldears.talent_forge.model.JobResponse;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 @Component
 public class JobMapper {
 
-    public JobResponse toResponse(Job job) {
+    public JobResponse fromJobToJobResponse(Job job) {
         if (job == null) return null;
         return new JobResponse()
                 .id(job.getId() != null ? job.getId() : null)
@@ -20,9 +21,19 @@ public class JobMapper {
                 .minExperience(job.getMinExperience());
     }
 
-    public List<JobResponse> toResponseList(List<Job> jobs) {
+    public List<JobResponse> fromJobListToJobResponseList(List<Job> jobs) {
         return jobs.stream()
-                .map(this::toResponse)
+                .map(this::fromJobToJobResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Job fromJobRequestToJob(JobRequest jobRequest) {
+        if (jobRequest == null) return null;
+        Job job = new Job();
+        job.setDescription(jobRequest.getDescription());
+        job.setTitle(jobRequest.getTitle());
+        job.setMinExperience(jobRequest.getMinExperience());
+        job.setRequiredSkills(jobRequest.getRequiredSkills());
+        return job;
     }
 }

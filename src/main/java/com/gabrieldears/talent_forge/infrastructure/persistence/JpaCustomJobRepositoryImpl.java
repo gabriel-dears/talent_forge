@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class JpaCustomJobImpl implements CustomJobRepository {
+public class JpaCustomJobRepositoryImpl implements CustomJobRepository {
 
     private final JpaJobRepository jpaJobRepository;
     private final JobMapper jobMapper;
 
-    public JpaCustomJobImpl(JpaJobRepository jpaJobRepository, JobMapper jobMapper) {
+    public JpaCustomJobRepositoryImpl(JpaJobRepository jpaJobRepository, JobMapper jobMapper) {
         this.jpaJobRepository = jpaJobRepository;
         this.jobMapper = jobMapper;
     }
@@ -25,8 +25,13 @@ public class JpaCustomJobImpl implements CustomJobRepository {
     public com.gabrieldears.talent_forge.model.JobsGet200Response findAll(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Job> jobsPage = jpaJobRepository.findAll(pageRequest);
-        List<JobResponse> jobResponses = jobMapper.toResponseList(jobsPage.getContent());
+        List<JobResponse> jobResponses = jobMapper.fromJobListToJobResponseList(jobsPage.getContent());
         return getJobsGet200Response(jobResponses, jobsPage);
+    }
+
+    @Override
+    public Job create(Job job) {
+        return jpaJobRepository.save(job);
     }
 
     private static com.gabrieldears.talent_forge.model.JobsGet200Response getJobsGet200Response(List<JobResponse> jobResponses, Page<Job> jobsPage) {
