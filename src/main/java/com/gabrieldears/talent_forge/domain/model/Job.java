@@ -1,6 +1,8 @@
 package com.gabrieldears.talent_forge.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,16 +11,18 @@ import java.util.UUID;
 public class Job {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
+    @NotBlank
     private String title;
 
+    @NotBlank
     private String description;
 
     @ElementCollection
     private List<String> requiredSkills;
 
+    @Min(0)
     private int minExperience;
 
     @PrePersist

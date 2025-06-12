@@ -1,6 +1,9 @@
 package com.gabrieldears.talent_forge.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +14,9 @@ public class Candidate {
     @Id
     private String id;
 
+    @NotBlank
     private String name;
+    @NotBlank
     private String email;
 
     @Embedded
@@ -20,6 +25,8 @@ public class Candidate {
     @ElementCollection
     private List<String> skills;
 
+    @Min(0)
+    @NotNull
     private int experienceYears;
 
     @PrePersist
