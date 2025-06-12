@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
+@RestController
 public class JobController implements com.gabrieldears.talent_forge.api.JobsApi {
 
     private final JobService jobService;
