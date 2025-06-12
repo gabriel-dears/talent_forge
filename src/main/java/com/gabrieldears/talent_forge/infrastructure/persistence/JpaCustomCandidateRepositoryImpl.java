@@ -51,7 +51,7 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     public com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Candidate> candidatesPage = jpaCandidateRepository.findAll(pageRequest);
-        List<CandidateResponse> candidateResponseList = candidatesPage.getContent().stream().map(candidateMapper::mapFromCandidateToCandidateResponse).toList();
+        List<CandidateResponse> candidateResponseList = candidateMapper.mapFromCandidateListToCandidateResponseList(candidatesPage.getContent());
         return getCandidatesGet200Response(candidateResponseList, candidatesPage);
     }
 

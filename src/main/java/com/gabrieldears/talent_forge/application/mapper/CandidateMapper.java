@@ -7,6 +7,8 @@ import com.gabrieldears.talent_forge.domain.model.Resume;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CandidateMapper {
 
@@ -28,6 +30,10 @@ public class CandidateMapper {
             candidateResponse.resumeText(resume.getText());
         }
         return candidateResponse;
+    }
+
+    public List<CandidateResponse> mapFromCandidateListToCandidateResponseList(List<Candidate> candidates) {
+        return candidates.stream().map(this::mapFromCandidateToCandidateResponse).toList();
     }
 
     public Candidate mapFromCandidatePostRequestToCandidate(CandidateRequestDto candidateRequestDto) {
