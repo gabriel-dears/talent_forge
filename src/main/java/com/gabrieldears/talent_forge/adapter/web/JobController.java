@@ -45,7 +45,7 @@ public class JobController implements com.gabrieldears.talent_forge.api.JobsApi 
             @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String
                     id
     ) {
-        return null;
+        return ResponseEntity.ok(jobService.findById(id));
     }
 
     @Override
