@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobServiceImplTest {
@@ -109,7 +108,17 @@ class JobServiceImplTest {
         when(customJobRepository.existsById(anyString())).thenReturn(false);
         // Act and Assert
         Assertions.assertThrows(JobNotFoundException.class, () -> jobService.delete("anyUnknownId"));
+    }
 
+    @Test
+    void shouldDeleteJobById() {
+        // Arrange
+        when(customJobRepository.existsById(anyString())).thenReturn(true);
+        doNothing().when(customJobRepository).delete(anyString());
+        // Act
+        jobService.delete("id");
+        // Assert
+        verify(customJobRepository, times(1)).delete("id");
     }
 
 }
