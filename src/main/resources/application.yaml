@@ -11,6 +11,8 @@ validationAnnotationPlacement: field
 
 server:
   port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
 
 spring:
   servlet:
