@@ -11,4 +11,8 @@ public interface CustomJobRepository {
     Job create(Job job);
 
     Optional<Job> findById(String id);
+
+    void delete(String id);
+
+    boolean existsById(String id);
 }

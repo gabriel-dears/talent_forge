@@ -40,6 +40,16 @@ public class JpaCustomJobRepositoryImpl implements CustomJobRepository {
         return jpaJobRepository.findById(id);
     }
 
+    @Override
+    public void delete(String id) {
+        jpaJobRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(String id) {
+        return jpaJobRepository.existsById(id);
+    }
+
     private static com.gabrieldears.talent_forge.model.JobsGet200Response getJobsGet200Response(List<JobResponse> jobResponses, Page<Job> jobsPage) {
         return new com.gabrieldears.talent_forge.model.JobsGet200Response()
                 .content(jobResponses)

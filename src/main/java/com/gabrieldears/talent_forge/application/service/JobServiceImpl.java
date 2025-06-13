@@ -38,4 +38,17 @@ public class JobServiceImpl implements JobService {
         Job job = customJobRepository.findById(id).orElseThrow(() -> new JobNotFoundException(id));
         return jobMapper.fromJobToJobResponse(job);
     }
+
+    @Override
+    public void delete(String id) {
+        if (jobDoesntExist(id)) {
+            throw new JobNotFoundException(id);
+        }
+        customJobRepository.delete(id);
+    }
+
+    private boolean jobDoesntExist(String id) {
+        return !customJobRepository.existsById(id);
+    }
+
 }

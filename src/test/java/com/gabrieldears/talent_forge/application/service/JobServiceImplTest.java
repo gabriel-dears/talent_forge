@@ -103,4 +103,13 @@ class JobServiceImplTest {
         Assertions.assertNotNull(jobResponse);
     }
 
+    @Test
+    void shouldNotDeleteJobById() {
+        // Arrange
+        when(customJobRepository.existsById(anyString())).thenReturn(false);
+        // Act and Assert
+        Assertions.assertThrows(JobNotFoundException.class, () -> jobService.delete("anyUnknownId"));
+
+    }
+
 }
