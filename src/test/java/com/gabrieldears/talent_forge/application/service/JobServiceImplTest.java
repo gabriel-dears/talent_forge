@@ -1,7 +1,9 @@
 package com.gabrieldears.talent_forge.application.service;
 
 import com.gabrieldears.talent_forge.application.mapper.JobMapper;
+import com.gabrieldears.talent_forge.domain.model.Job;
 import com.gabrieldears.talent_forge.domain.repository.CustomJobRepository;
+import com.gabrieldears.talent_forge.model.JobRequest;
 import com.gabrieldears.talent_forge.model.JobResponse;
 import com.gabrieldears.talent_forge.model.JobsGet200Response;
 import org.junit.jupiter.api.Assertions;
@@ -14,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +52,31 @@ class JobServiceImplTest {
         doThrow(ConstraintViolationException.class).when(customJobRepository).create(null);
         // Act and Assert
         Assertions.assertThrows(ConstraintViolationException.class, () -> jobService.create(null));
+    }
+
+    @Test
+    void shouldCreateJob() {
+        JobRequest jobRequest = new JobRequest();
+        jobRequest.setTitle("title");
+        jobRequest.setDescription("description");
+        jobRequest.setMinExperience(3);
+        jobRequest.requiredSkills(List.of("skill1", "skill2"));
+        Job job = new Job();
+        job.setTitle("title");
+        job.setDescription("description");
+        job.setMinExperience(3);
+        job.setRequiredSkills(List.of("skill1", "skill2"));
+        JobResponse jobResponse = new JobResponse();
+        jobResponse.setTitle("title");
+        jobResponse.setDescription("description");
+        jobResponse.setMinExperience(3);
+        jobResponse.requiredSkills(List.of("skill1", "skill2"));
+        when(jobMapper.fromJobRequestToJob(any(JobRequest.class))).thenReturn(job);
+        when(jobMapper.fromJobToJobResponse(any(Job.class))).thenReturn(jobResponse);
+        when(customJobRepository.create(any())).thenReturn(job);
+        JobResponse finalJobResponse = jobService.create(jobRequest);
+        Assertions.assertNotNull(finalJobResponse);
+        Assertions.assertEquals(jobResponse, finalJobResponse);
     }
 
 }
