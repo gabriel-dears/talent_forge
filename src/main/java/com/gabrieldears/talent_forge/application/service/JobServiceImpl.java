@@ -35,14 +35,14 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobResponse findById(String id) {
-        Job job = customJobRepository.findById(id).orElseThrow(() -> new JobNotFoundException(id));
+        Job job = customJobRepository.findById(id).orElseThrow(() -> new JobNotFoundException(String.format("Job with id %s not found", id)));
         return jobMapper.fromJobToJobResponse(job);
     }
 
     @Override
     public void delete(String id) {
         if (jobDoesntExist(id)) {
-            throw new JobNotFoundException(id);
+            throw new JobNotFoundException(String.format("Job with id %s not found", id));
         }
         customJobRepository.delete(id);
     }
