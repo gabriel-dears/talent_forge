@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JpaCustomJobRepositoryImpl implements CustomJobRepository {
@@ -32,6 +33,11 @@ public class JpaCustomJobRepositoryImpl implements CustomJobRepository {
     @Override
     public Job create(Job job) {
         return jpaJobRepository.save(job);
+    }
+
+    @Override
+    public Optional<Job> findById(String id) {
+        return jpaJobRepository.findById(id);
     }
 
     private static com.gabrieldears.talent_forge.model.JobsGet200Response getJobsGet200Response(List<JobResponse> jobResponses, Page<Job> jobsPage) {

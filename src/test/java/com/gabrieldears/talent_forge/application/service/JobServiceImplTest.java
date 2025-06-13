@@ -1,5 +1,6 @@
 package com.gabrieldears.talent_forge.application.service;
 
+import com.gabrieldears.talent_forge.application.exception.custom.JobNotFoundException;
 import com.gabrieldears.talent_forge.application.mapper.JobMapper;
 import com.gabrieldears.talent_forge.domain.model.Job;
 import com.gabrieldears.talent_forge.domain.repository.CustomJobRepository;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
@@ -56,6 +58,7 @@ class JobServiceImplTest {
 
     @Test
     void shouldCreateJob() {
+        // Arrange
         JobRequest jobRequest = new JobRequest();
         jobRequest.setTitle("title");
         jobRequest.setDescription("description");
@@ -74,9 +77,17 @@ class JobServiceImplTest {
         when(jobMapper.fromJobRequestToJob(any(JobRequest.class))).thenReturn(job);
         when(jobMapper.fromJobToJobResponse(any(Job.class))).thenReturn(jobResponse);
         when(customJobRepository.create(any())).thenReturn(job);
+        // Act
         JobResponse finalJobResponse = jobService.create(jobRequest);
+        // Assert
         Assertions.assertNotNull(finalJobResponse);
         Assertions.assertEquals(jobResponse, finalJobResponse);
+    }
+
+    @Test
+    void shouldNotFindJobById() {
+        when(customJobRepository.findById(anyString())).thenReturn(Optional.empty());
+        Assertions.assertThrows(JobNotFoundException.class, () -> jobService.findById("anyUnknownId"));
     }
 
 }

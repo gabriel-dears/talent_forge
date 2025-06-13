@@ -8,4 +8,7 @@ public interface JobService {
     JobsGet200Response findAll(Integer page, Integer size);
 
     com.gabrieldears.talent_forge.model.JobResponse create(JobRequest jobRequest);
+
+    com.gabrieldears.talent_forge.model.JobResponse findById(String id);
+
 }
