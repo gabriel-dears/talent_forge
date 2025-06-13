@@ -167,7 +167,7 @@ class CandidateServiceImplTest {
 
     @Test
     void shouldNotCreateCandidateWithExistingEmail() {
-        //Arrange
+        // Arrange
         CandidateRequestDto candidatesPostRequest = new CandidateRequestDto(
                 null,
                 "email",
