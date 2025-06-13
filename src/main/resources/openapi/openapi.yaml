@@ -119,8 +119,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
-          description: Candidate data
+        '204':
+          description: Candidate deleted
+        '404':
+          description: Candidate not found
     put:
       tags:
         - Candidates
