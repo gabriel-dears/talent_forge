@@ -2,6 +2,7 @@ package com.gabrieldears.talent_forge.application.exception;
 
 import com.gabrieldears.talent_forge.application.exception.custom.CandidateNotFoundException;
 import com.gabrieldears.talent_forge.application.exception.custom.EmailAlreadyExistsException;
+import com.gabrieldears.talent_forge.application.exception.custom.JobNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({CandidateNotFoundException.class})
+    @ExceptionHandler({CandidateNotFoundException.class, JobNotFoundException.class})
     public ResponseEntity<DefaultErrorResponse> handleCandidateNotFoundException(Exception ex, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, request, ex.getMessage());
     }
