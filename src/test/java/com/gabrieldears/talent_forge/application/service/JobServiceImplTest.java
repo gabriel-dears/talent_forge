@@ -86,8 +86,21 @@ class JobServiceImplTest {
 
     @Test
     void shouldNotFindJobById() {
+        // Arrange
         when(customJobRepository.findById(anyString())).thenReturn(Optional.empty());
+        // Act and Assert
         Assertions.assertThrows(JobNotFoundException.class, () -> jobService.findById("anyUnknownId"));
+    }
+
+    @Test
+    void shouldFindJobById() {
+        // Arrange
+        when(jobMapper.fromJobToJobResponse(any(Job.class))).thenReturn(new JobResponse());
+        when(customJobRepository.findById(anyString())).thenReturn(Optional.of(new Job()));
+        // Act
+        JobResponse jobResponse = jobService.findById("anyUnknownId");
+        // Assert
+        Assertions.assertNotNull(jobResponse);
     }
 
 }
