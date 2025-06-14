@@ -36,4 +36,14 @@ public class JobMapper {
         job.setRequiredSkills(jobRequest.getRequiredSkills());
         return job;
     }
+
+    public Job fromJobRequestUpdateToJob(com.gabrieldears.talent_forge.model.JobRequest jobRequest, String id) {
+        Job job = new Job();
+        job.setId(id);
+        job.setTitle(jobRequest.getTitle());
+        job.setDescription(jobRequest.getDescription());
+        job.setMinExperience(jobRequest.getMinExperience());
+        job.setRequiredSkills(jobRequest.getRequiredSkills());
+        return job;
+    }
 }

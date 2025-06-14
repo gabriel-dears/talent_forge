@@ -121,4 +121,27 @@ class JobServiceImplTest {
         verify(customJobRepository, times(1)).delete("id");
     }
 
+    @Test
+    void shouldNotUpdateJob() {
+        // Arrange
+        String id = "jobId";
+        JobRequest jobRequest = new JobRequest();
+        doThrow(ConstraintViolationException.class).when(customJobRepository).update(any(Job.class));
+        when(jobMapper.fromJobRequestUpdateToJob(any(JobRequest.class), anyString())).thenReturn(new Job());
+        // Act and Assert
+        Assertions.assertThrows(ConstraintViolationException.class, () -> jobService.update(jobRequest, id));
+    }
+
+    @Test
+    void shouldUpdateJob() {
+        // Arrange
+        when(customJobRepository.update(any(Job.class))).thenReturn(new Job());
+        when(jobMapper.fromJobRequestUpdateToJob(any(JobRequest.class), anyString())).thenReturn(new Job());
+        when(jobMapper.fromJobToJobResponse(any(Job.class))).thenReturn(new JobResponse());
+        // Act
+        jobService.update(new JobRequest(), "jobId");
+        // Assert
+        verify(jobMapper, times(1)).fromJobRequestUpdateToJob(any(JobRequest.class), anyString());
+    }
+
 }

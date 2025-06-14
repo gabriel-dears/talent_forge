@@ -12,4 +12,6 @@ public interface JobService {
     com.gabrieldears.talent_forge.model.JobResponse findById(String id);
 
     void delete(String id);
+
+    com.gabrieldears.talent_forge.model.JobResponse update(com.gabrieldears.talent_forge.model.JobRequest jobRequest, String id);
 }

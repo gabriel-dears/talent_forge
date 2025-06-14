@@ -15,4 +15,7 @@ public interface CustomJobRepository {
     void delete(String id);
 
     boolean existsById(String id);
+
+    Job update(Job job);
+
 }

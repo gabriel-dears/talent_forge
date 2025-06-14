@@ -56,7 +56,7 @@ public class JobController implements com.gabrieldears.talent_forge.api.JobsApi 
             @Parameter(name = "JobRequest", required = true) @Valid @RequestBody com.gabrieldears.talent_forge.model.JobRequest
                     jobRequest
     ) {
-        return null;
+        return ResponseEntity.ok(jobService.update(jobRequest, id));
     }
 
     @Override

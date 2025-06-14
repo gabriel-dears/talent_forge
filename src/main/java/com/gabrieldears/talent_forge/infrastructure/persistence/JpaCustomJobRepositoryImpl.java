@@ -50,6 +50,11 @@ public class JpaCustomJobRepositoryImpl implements CustomJobRepository {
         return jpaJobRepository.existsById(id);
     }
 
+    @Override
+    public Job update(Job job) {
+        return jpaJobRepository.save(job);
+    }
+
     private static com.gabrieldears.talent_forge.model.JobsGet200Response getJobsGet200Response(List<JobResponse> jobResponses, Page<Job> jobsPage) {
         return new com.gabrieldears.talent_forge.model.JobsGet200Response()
                 .content(jobResponses)

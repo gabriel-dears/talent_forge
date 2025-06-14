@@ -47,6 +47,13 @@ public class JobServiceImpl implements JobService {
         customJobRepository.delete(id);
     }
 
+    @Override
+    public JobResponse update(JobRequest jobRequest, String id) {
+        Job job = jobMapper.fromJobRequestUpdateToJob(jobRequest, id);
+        Job updatedJob = customJobRepository.update(job);
+        return jobMapper.fromJobToJobResponse(updatedJob);
+    }
+
     private boolean jobDoesntExist(String id) {
         return !customJobRepository.existsById(id);
     }
