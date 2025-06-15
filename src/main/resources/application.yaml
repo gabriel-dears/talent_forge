@@ -44,6 +44,6 @@ management:
       exposure:
         include: health,info
 
-
-
-
+ai:
+  matcher:
+    url: ${AI_MATCHER_URL:http://localhost:5678}
