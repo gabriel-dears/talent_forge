@@ -46,4 +46,4 @@ management:
 
 ai:
   matcher:
-    url: ${AI_MATCHER_URL:http://localhost:5678}
+    url: ${AI_MATCHER_URL:http://localhost:8000}
