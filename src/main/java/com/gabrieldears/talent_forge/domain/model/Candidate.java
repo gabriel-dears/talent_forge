@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class Candidate {
 
     @NotBlank
     private String name;
+
     @NotBlank
     private String email;
 
@@ -29,12 +31,20 @@ public class Candidate {
     @NotNull
     private int experienceYears;
 
+    @Column(nullable = false)
+    private LocalDate dateNotification;
+
     @PrePersist
-    public void generateId() {
+    public void prePersist() {
         if (id == null) {
             id = UUID.randomUUID().toString();
         }
+        if (dateNotification == null) {
+            dateNotification = LocalDate.now().plusDays(7);
+        }
     }
+
+    // Getters and setters
 
     public String getId() {
         return id;
@@ -82,5 +92,13 @@ public class Candidate {
 
     public void setExperienceYears(int experienceYears) {
         this.experienceYears = experienceYears;
+    }
+
+    public LocalDate getDateNotification() {
+        return dateNotification;
+    }
+
+    public void setDateNotification(LocalDate dateNotification) {
+        this.dateNotification = dateNotification;
     }
 }

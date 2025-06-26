@@ -1,7 +1,10 @@
 package com.gabrieldears.talent_forge.domain.repository;
 
 import com.gabrieldears.talent_forge.domain.model.Candidate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface CustomCandidateRepository {
@@ -21,4 +24,7 @@ public interface CustomCandidateRepository {
     Candidate update(Candidate candidateToBeUpdated);
 
     boolean emailAlreadyExistsForAnotherCandidate(String email, String id);
+
+    Page<Candidate> findByDateNotification(LocalDate dateNotification, Pageable pageable);
+
 }

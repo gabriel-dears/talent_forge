@@ -6,8 +6,10 @@ import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository
 import com.gabrieldears.talent_forge.model.CandidateResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +75,10 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     @Override
     public boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
         return jpaCandidateRepository.existsByEmailAndIdNot(email, id);
+    }
+
+    @Override
+    public Page<Candidate> findByDateNotification(LocalDate dateNotification, Pageable pageable) {
+        return jpaCandidateRepository.findByDateNotification(dateNotification, pageable);
     }
 }
