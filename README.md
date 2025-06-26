@@ -1,21 +1,57 @@
 # 🧠 Talent Forge – AI-Powered Job Matching Platform
 
-**Talent Forge** is a modern recruitment backend platform built with **Spring Boot 3.5** and **Java 21**, designed to streamline hiring using **AI integration**. It enables companies to post jobs, manage candidate profiles, and leverage intelligent matching algorithms to rank candidates based on resume content and skills.
+**Talent Forge** is a modern recruitment backend platform built with Spring Boot 3.5 and Java 21, designed to streamline
+hiring through intelligent AI integration. It enables companies to manage job listings, candidate profiles, and
+leverages asynchronous Kafka-based communication with downstream services like an AI matcher.
 
-The platform offers resume parsing using external NLP services, analytics via Spring Actuator, secure API endpoints with OAuth2/JWT, and basic notification features for interview scheduling. It also supports file upload for resumes and provides an OpenAPI-driven contract-first approach for clean, scalable development.
+This backend supports resume parsing, observability, secure REST APIs with OAuth2, event-driven messaging, and scalable
+architecture for microservices.
 
 ---
 
 ### 🔍 Key Features
 
-- ✅ **Job & Candidate CRUD**
-- 📄 **Resume Parsing** with AI/NLP APIs (e.g., AWS Comprehend)
-- 🧮 **AI-Powered Candidate Matching** with basic scoring logic
-- 📊 **Admin Dashboard & Analytics** using Spring Boot Actuator + Grafana
-- ✉️ **Notification System** (email/SMS for interview scheduling)
-- 🗂️ **Resume Storage** (local file system or cloud bucket)
-- 🔐 **Secure REST API** with OAuth2 / JWT Authentication
-- 🧬 **OpenAPI-Driven Architecture** using code generation
+- ✅ Job & Candidate CRUD operations
+- 📄 Resume Parsing using AI/NLP (e.g., AWS Comprehend, Apache Tika)
+- 🧠 AI Matching Integration via Kafka event messaging
+- 📊 Observability with Spring Boot Actuator (Grafana ready)
+- 🗂️ Resume Upload & Storage (local or cloud-compatible)
+- 🔐 Secure APIs using OAuth2 & JWT
+- 📃 Contract-First API Design via OpenAPI Generator
+- 🔁 Kafka Integration to decouple matching and notification flows
+
+---
+
+### 📬 Kafka Integration
+
+The system publishes events to Kafka so external microservices (like the AI Matcher) can consume them asynchronously
+for:
+
+- AI-powered candidate/job matching
+- Intelligent notification processing
+- Future extensibility (analytics, feedback loops, etc.)
+
+#### 🔗 Topics
+
+| Topic             | Description                                |
+|-------------------|--------------------------------------------|
+| `new-candidate`   | Fired when a candidate is created/updated  |
+| `new-job`         | Fired when a job is created/updated        |
+| `interview-event` | (Planned) Interview invitations, reminders |
+
+You can configure topic names in application.yml.
+
+#### Kafka Producer Example (Spring Boot):
+
+kafkaTemplate.send("new-candidate", candidateDto);
+
+#### Kafka Setup Required
+
+```yaml
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+```
 
 ---
 
@@ -26,7 +62,7 @@ The platform offers resume parsing using external NLP services, analytics via Sp
 - `Resume` – extracted text and storage path of the uploaded file.
 - `MatchScore` – basic scoring structure for AI matching logic.
 - `MatchResult` *(optional)* – enriched result combining job, candidate, and score.
-- `Notification` – encapsulates information required to notify a candidate about relevant job matches or interview opportunities, including recipient details, message content, and delivery status tracking.
+- `KafkaMessage` - DTO used to publish candidate/job events to topics.
 
 ---
 
@@ -74,6 +110,7 @@ mvn clean install
 ```
 
 ## Run
+
 ```bash
 mvn spring-boot:run
 ```
@@ -142,10 +179,11 @@ src/
 
 ## 📦 Dependencies Highlights
 
-springdoc-openapi-starter-webmvc-ui – Swagger UI for Spring Boot 3.x
+| Dependency                       | Purpose                            |
+|----------------------------------|------------------------------------|
+| `spring-kafka`                   | Kafka integration (producer-ready) |
+| `springdoc-openapi`              | OpenAPI/Swagger UI                 |
+| `openapi-generator-maven-plugin` | Contract-first code gen            |
+| `apache-tika`                    | Resume content extraction          |
+| `jacoco-maven-plugin`            | Code coverage                      |
 
-openapi-generator-maven-plugin – Generates interfaces from OpenAPI YAML
-
-tika-core / tika-parsers-standard-package – For parsing text from files
-
-jacoco-maven-plugin – For code coverage metrics
