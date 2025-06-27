@@ -1,0 +1,152 @@
+type: collection.insomnia.rest/5.0
+name: Talent Forge - Job
+meta:
+  id: wrk_3e38b7fa1a2848aba165ae7bc8646fb1
+  created: 1749696318437
+  modified: 1749696318437
+  description: ""
+collection:
+  - url: http://localhost:8080/api/v1/jobs?page=0&size=100
+    name: Retrieve Job List
+    meta:
+      id: req_47f3f97170a948d39d77fe41c276de1a
+      created: 1749696321961
+      modified: 1750987252454
+      isPrivate: false
+      description: ""
+      sortKey: -1749696321961
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/v1/jobs
+    name: Create Job
+    meta:
+      id: req_7b4ca74336754bffad93310658a92847
+      created: 1749773795604
+      modified: 1750987208321
+      isPrivate: false
+      description: ""
+      sortKey: -1749773795604
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"title": "Desenolvedor Java Senior",
+        	"description": "Buscamos um profissional sênior para liderar o novo projeto tecnicamente e orientar novos times",
+        	"requiredSkills": ["Java", "JavaEE", "K8s", "Azure", "Spring"],
+        	"minExperience": 10
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/v1/jobs/23640004-3e13-4aee-a930-47b93e3fddda
+    name: Retrieve Job by ID
+    meta:
+      id: req_93dec725b1a44143950bc3f4e49e85e4
+      created: 1749774932085
+      modified: 1750127942543
+      isPrivate: false
+      description: ""
+      sortKey: -1749774932085
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/v1/jobs/c273aa77-ac0a-4396-a6ec-7b78f00003f4
+    name: Update Job
+    meta:
+      id: req_c902adb8b85641009ce2716a32329796
+      created: 1749775082377
+      modified: 1749886339436
+      isPrivate: false
+      description: ""
+      sortKey: -1749775082377
+    method: PUT
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"title": "Desenvolvedor Java Sênior",
+        	"description": "Buscamos um profissional sênior para liderar o novo projeto tecnicamente e orientar outros times",
+        	"requiredSkills": [
+        		"Spring Boot",
+        		"Java 17",
+        		"K8s"
+        	],
+        	"minExperience": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/v1/jobs/9d476cfa-8da2-4fd0-96c6-85e6d2d2ad3f
+    name: Delete Job
+    meta:
+      id: req_b36d0629c135434ea435c07352dccadf
+      created: 1749775085509
+      modified: 1749886237005
+      isPrivate: false
+      description: ""
+      sortKey: -1749775085509
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_fd6ffc37b129998af6a483996e07c28f4be4deaf
+    created: 1749696318439
+    modified: 1749696318439
+environments:
+  name: Base Environment
+  meta:
+    id: env_fd6ffc37b129998af6a483996e07c28f4be4deaf
+    created: 1749696318439
+    modified: 1749696318439
+    isPrivate: false

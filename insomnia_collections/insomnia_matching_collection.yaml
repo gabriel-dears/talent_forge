@@ -1,0 +1,42 @@
+type: collection.insomnia.rest/5.0
+name: Talent Forge - Matching
+meta:
+  id: wrk_034614ca6b9c4cae8e9fb459d416d2ad
+  created: 1750047189310
+  modified: 1750047189310
+  description: ""
+collection:
+  - url: http://localhost:8080/api/v1/candidates/6b8f94c8-2669-4d39-871a-7f45e9be08ea/matches
+    name: Match jobs by candidate ID
+    meta:
+      id: req_b5a44fa886744b6688319c9aafbb748c
+      created: 1750047196387
+      modified: 1750987431923
+      isPrivate: false
+      description: ""
+      sortKey: -1750047196387
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_a089a12ef3be3fb20ca6de1c0257367c390220dc
+    created: 1750047189313
+    modified: 1750047189313
+environments:
+  name: Base Environment
+  meta:
+    id: env_a089a12ef3be3fb20ca6de1c0257367c390220dc
+    created: 1750047189312
+    modified: 1750047189312
+    isPrivate: false
