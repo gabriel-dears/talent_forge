@@ -78,7 +78,7 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     }
 
     @Override
-    public Page<Candidate> findByDateNotification(LocalDate dateNotification, Pageable pageable) {
-        return jpaCandidateRepository.findByDateNotification(dateNotification, pageable);
+    public Page<Candidate> findByDateNotificationLessThanEqual(LocalDate dateNotification, Pageable pageable) {
+        return jpaCandidateRepository.findByDateNotificationLessThanEqual(dateNotification, pageable);
     }
 }

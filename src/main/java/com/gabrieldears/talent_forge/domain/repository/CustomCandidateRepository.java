@@ -25,6 +25,6 @@ public interface CustomCandidateRepository {
 
     boolean emailAlreadyExistsForAnotherCandidate(String email, String id);
 
-    Page<Candidate> findByDateNotification(LocalDate dateNotification, Pageable pageable);
+    Page<Candidate> findByDateNotificationLessThanEqual(LocalDate dateNotification, Pageable pageable);
 
 }

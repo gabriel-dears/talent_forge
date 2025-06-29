@@ -25,7 +25,7 @@ public class CandidateMatchScheduler {
         this.matchRequestProducer = matchRequestProducer;
     }
 
-    @Scheduled(cron = "0 0 8 ? * MON,THU") // 8am Mon & Thu
+    @Scheduled(cron = "0 0 8 ? * MON,THU", zone = "America/Sao_Paulo") // 8am Mon & Thu
     public void scheduleMatchJob() {
 //        log.info("Starting match scheduler at {}", LocalDate.now());
 
@@ -33,7 +33,7 @@ public class CandidateMatchScheduler {
         Page<Candidate> page;
 
         do {
-            page = candidateRepository.findByDateNotification(LocalDate.now(), pageable);
+            page = candidateRepository.findByDateNotificationLessThanEqual(LocalDate.now().plusDays(7), pageable);
 //            log.info("Sending {} candidates for match", page.getNumberOfElements());
             sendBatchAsync(page);
 

@@ -12,5 +12,5 @@ public interface JpaCandidateRepository extends JpaRepository<Candidate, String>
 
     boolean existsByEmailAndIdNot(String email, String id);
 
-    Page<Candidate> findByDateNotification(LocalDate dateNotification, Pageable pageable);
+    Page<Candidate> findByDateNotificationLessThanEqual(LocalDate dateNotification, Pageable pageable);
 }
