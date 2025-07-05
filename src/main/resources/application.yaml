@@ -1,20 +1,11 @@
-generatorName: spring
-inputSpec: openapi.yaml
-outputDir: generated/
-additionalProperties:
-  interfaceOnly: true
-  skipDefaultInterface: true
-  useTags: true
-  apiPackage: com.gabrieldears.talent_forge.api
-  modelPackage: com.gabrieldears.talent_forge.model
-validationAnnotationPlacement: field
-
 server:
   port: ${SERVER_PORT:8080}
   servlet:
     context-path: /
 
 spring:
+  application:
+    name: talent-forge-app
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
@@ -26,16 +17,19 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+
   datasource:
     url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:talent_forge}
     username: ${DB_USERNAME:user}
     password: ${DB_PASSWORD:pass}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -43,6 +37,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
   datasource.hikari:
     maximum-pool-size: 10
     minimum-idle: 2
@@ -51,29 +46,33 @@ spring:
     max-lifetime: 1800000
 
 management:
-  tracing:
-    propagation:
-      type: w3c
-    sampling:
-      probability: 1.0
-  otlp:
-    tracing:
-      endpoint: http://tempo:4317
-      protocol: grpc
-      export:
-        enabled: true
-
   endpoints:
     web:
       exposure:
         include: prometheus, health, info
+
   endpoint:
     prometheus:
-      access: unrestricted
+      enabled: true
+
   prometheus:
     metrics:
       export:
         enabled: true
+
+  tracing:
+    sampling:
+      probability: 1.0
+    export:
+      otlp:
+        endpoint: http://tempo:4317
+        protocol: grpc
+        enabled: true
+      batch:
+        size: 1
+        timeout: 500ms
+    propagation:
+      type: w3c
 
 logging:
   level:
@@ -82,8 +81,6 @@ logging:
     io.opentelemetry.exporter.otlp: DEBUG
     io.micrometer.tracing.exporter: DEBUG
     org.springframework.boot.actuate.autoconfigure.tracing: DEBUG
-
-
 
 ai:
   matcher:
