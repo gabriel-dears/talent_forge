@@ -3,7 +3,6 @@ package com.gabrieldears.talent_forge.infrastructure.persistence;
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
-import com.gabrieldears.talent_forge.model.CandidateResponse;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,6 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
 
     private final CandidateMapper candidateMapper;
     private final JpaCandidateRepository jpaCandidateRepository;
-
     private final ObservationRegistry registry;
 
     public JpaCustomCandidateRepositoryImpl(CandidateMapper candidateMapper, JpaCandidateRepository jpaCandidateRepository, ObservationRegistry registry) {
@@ -37,54 +35,68 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
 
     @Override
     public boolean emailAlreadyExists(String email) {
-        return jpaCandidateRepository.existsByEmail(email);
+        return Boolean.TRUE.equals(Observation.createNotStarted("candidate.email-exists", registry)
+                .observe(() -> jpaCandidateRepository.existsByEmail(email)));
     }
 
     @Override
     public boolean candidateExists(String candidateId) {
-        return jpaCandidateRepository.existsById(candidateId);
+        return Boolean.TRUE.equals(Observation.createNotStarted("candidate.exists-by-id", registry)
+                .observe(() -> jpaCandidateRepository.existsById(candidateId)));
     }
 
     @Override
     public Candidate create(Candidate candidate) {
-        return jpaCandidateRepository.save(candidate);
+        return Observation.createNotStarted("candidate.create", registry)
+                .observe(() -> jpaCandidateRepository.save(candidate));
     }
 
     @Override
     public void deleteById(String id) {
-        jpaCandidateRepository.deleteById(id);
+        Observation.createNotStarted("candidate.delete", registry)
+                .observe(() -> {
+                    jpaCandidateRepository.deleteById(id);
+                    return null;
+                });
     }
 
     @Override
     public com.gabrieldears.talent_forge.model.CandidatesGet200Response findAll(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Candidate> candidatesPage = jpaCandidateRepository.findAll(pageRequest);
-        List<CandidateResponse> candidateResponseList = candidateMapper.mapFromCandidateListToCandidateResponseList(candidatesPage.getContent());
-        return getCandidatesGet200Response(candidateResponseList, candidatesPage);
-    }
-
-    private static com.gabrieldears.talent_forge.model.CandidatesGet200Response getCandidatesGet200Response(List<CandidateResponse> candidateResponseList, Page<Candidate> candidatesPage) {
-        com.gabrieldears.talent_forge.model.CandidatesGet200Response candidatesGet200Response = new com.gabrieldears.talent_forge.model.CandidatesGet200Response();
-        candidatesGet200Response.setContent(candidateResponseList);
-        candidatesGet200Response.setTotalElements((int) candidatesPage.getTotalElements());
-        candidatesGet200Response.setTotalPages(candidatesPage.getTotalPages());
-        candidatesGet200Response.setNumber(candidatesPage.getNumber());
-        candidatesGet200Response.setSize(candidatesPage.getSize());
-        return candidatesGet200Response;
+        return Observation.createNotStarted("candidate.find-all", registry)
+                .observe(() -> {
+                    PageRequest pageRequest = PageRequest.of(page, size);
+                    Page<Candidate> candidatesPage = jpaCandidateRepository.findAll(pageRequest);
+                    List<com.gabrieldears.talent_forge.model.CandidateResponse> candidateResponseList =
+                            candidateMapper.mapFromCandidateListToCandidateResponseList(candidatesPage.getContent());
+                    return getCandidatesGet200Response(candidateResponseList, candidatesPage);
+                });
     }
 
     @Override
     public Candidate update(Candidate candidateToBeUpdated) {
-        return jpaCandidateRepository.save(candidateToBeUpdated);
+        return Observation.createNotStarted("candidate.update", registry)
+                .observe(() -> jpaCandidateRepository.save(candidateToBeUpdated));
     }
 
     @Override
     public boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
-        return jpaCandidateRepository.existsByEmailAndIdNot(email, id);
+        return Boolean.TRUE.equals(Observation.createNotStarted("candidate.email-exists-other-id", registry)
+                .observe(() -> jpaCandidateRepository.existsByEmailAndIdNot(email, id)));
     }
 
     @Override
     public Page<Candidate> findByDateNotificationLessThanEqual(LocalDate dateNotification, Pageable pageable) {
-        return jpaCandidateRepository.findByDateNotificationLessThanEqual(dateNotification, pageable);
+        return Observation.createNotStarted("candidate.find-by-dateNotification", registry)
+                .observe(() -> jpaCandidateRepository.findByDateNotificationLessThanEqual(dateNotification, pageable));
+    }
+
+    private static com.gabrieldears.talent_forge.model.CandidatesGet200Response getCandidatesGet200Response(List<com.gabrieldears.talent_forge.model.CandidateResponse> candidateResponseList, Page<Candidate> candidatesPage) {
+        com.gabrieldears.talent_forge.model.CandidatesGet200Response response = new com.gabrieldears.talent_forge.model.CandidatesGet200Response();
+        response.setContent(candidateResponseList);
+        response.setTotalElements((int) candidatesPage.getTotalElements());
+        response.setTotalPages(candidatesPage.getTotalPages());
+        response.setNumber(candidatesPage.getNumber());
+        response.setSize(candidatesPage.getSize());
+        return response;
     }
 }
