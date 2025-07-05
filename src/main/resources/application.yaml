@@ -49,16 +49,20 @@ spring:
     idle-timeout: 30000
     connection-timeout: 20000
     max-lifetime: 1800000
+
 management:
   tracing:
+    propagation:
+      type: w3c
     sampling:
-      probability: 1.0  # coleta 100% das requisições (em produção, reduza)
-    zipkin:
-      tracing:
-        endpoint: http://tempo:9411/api/v2/spans
-    otlp:
-      tracing:
-        endpoint: http://tempo:4318/v1/traces
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://tempo:4317
+      protocol: grpc
+      export:
+        enabled: true
+
   endpoints:
     web:
       exposure:
@@ -70,6 +74,15 @@ management:
     metrics:
       export:
         enabled: true
+
+logging:
+  level:
+    io.micrometer.tracing: DEBUG
+    io.opentelemetry: DEBUG
+    io.opentelemetry.exporter.otlp: DEBUG
+    io.micrometer.tracing.exporter: DEBUG
+    org.springframework.boot.actuate.autoconfigure.tracing: DEBUG
+
 
 
 ai:

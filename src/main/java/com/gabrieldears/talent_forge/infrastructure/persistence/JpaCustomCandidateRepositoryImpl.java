@@ -4,6 +4,8 @@ import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,14 +21,18 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     private final CandidateMapper candidateMapper;
     private final JpaCandidateRepository jpaCandidateRepository;
 
-    public JpaCustomCandidateRepositoryImpl(CandidateMapper candidateMapper, JpaCandidateRepository jpaCandidateRepository) {
+    private final ObservationRegistry registry;
+
+    public JpaCustomCandidateRepositoryImpl(CandidateMapper candidateMapper, JpaCandidateRepository jpaCandidateRepository, ObservationRegistry registry) {
         this.candidateMapper = candidateMapper;
         this.jpaCandidateRepository = jpaCandidateRepository;
+        this.registry = registry;
     }
 
     @Override
     public Optional<Candidate> findById(String id) {
-        return jpaCandidateRepository.findById(id);
+        return Observation.createNotStarted("candidate.find-by-id", registry)
+                .observe(() -> jpaCandidateRepository.findById(id));
     }
 
     @Override

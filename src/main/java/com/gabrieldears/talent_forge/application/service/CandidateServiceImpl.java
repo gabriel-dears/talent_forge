@@ -9,10 +9,27 @@ import com.gabrieldears.talent_forge.application.validator.UpdateCandidateValida
 import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import com.gabrieldears.talent_forge.domain.service.CandidateService;
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.Tracer;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
+
+    private final Tracer tracer;
+
+    @PostConstruct
+    public void testSpan() {
+        Span span = tracer.nextSpan().name("span-manual-teste").start();
+        try (Tracer.SpanInScope scope = tracer.withSpan(span)) {
+            Thread.sleep(500); // força alguma duração
+        } catch (InterruptedException ignored) {
+        } finally {
+            span.end();
+        }
+    }
+
 
     private final CustomCandidateRepository customCandidateRepository;
     private final CandidateMapper candidateMapper;
@@ -20,12 +37,13 @@ public class CandidateServiceImpl implements CandidateService {
     private final CreateCandidateValidator createCandidateValidator;
     private final UpdateCandidateValidator updateCandidateValidator;
 
-    public CandidateServiceImpl(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator) {
+    public CandidateServiceImpl(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator, Tracer tracer) {
         this.customCandidateRepository = customCandidateRepository;
         this.candidateMapper = candidateMapper;
         this.retrieveCandidateByIdValidator = retrieveCandidateByIdValidator;
         this.createCandidateValidator = createCandidateValidator;
         this.updateCandidateValidator = updateCandidateValidator;
+        this.tracer = tracer;
     }
 
     @Override
