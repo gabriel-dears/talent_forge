@@ -25,6 +25,10 @@ public class Job {
     @Min(0)
     private int minExperience;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     @PrePersist
     public void generateId() {
         if (id == null) {
@@ -70,5 +74,13 @@ public class Job {
 
     public void setMinExperience(int minExperience) {
         this.minExperience = minExperience;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

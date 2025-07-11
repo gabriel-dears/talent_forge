@@ -14,6 +14,8 @@ tags:
     description: Operations related to job postings
   - name: Matching
     description: Operations for matching candidates to jobs
+  - name: Companies
+    description: Operations related to companies and user accounts
 
 paths:
   /candidates:
@@ -74,6 +76,9 @@ paths:
                   type: string
                   minLength: 1
                   format: email
+                password:
+                  type: string
+                  minLength: 1
                 skills:
                   type: array
                   items:
@@ -147,6 +152,9 @@ paths:
                   type: string
                   minLength: 1
                   format: email
+                password:
+                  type: string
+                  minLength: 1
                 skills:
                   type: array
                   items:
@@ -322,6 +330,128 @@ paths:
                 items:
                   $ref: '#/components/schemas/CandidateResponse'
 
+  /companies:
+    post:
+      tags:
+        - Companies
+      summary: Register a new company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+      responses:
+        '201':
+          description: Company created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+
+    get:
+      tags:
+        - Companies
+      summary: List all companies with pagination
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          description: Page number
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+          description: Page size
+      responses:
+        '200':
+          description: Paginated list of companies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CompanyResponse'
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+
+  /companies/{id}:
+    get:
+      tags:
+        - Companies
+      summary: Get a company by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Company details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        '404':
+          description: Company not found
+
+    put:
+      tags:
+        - Companies
+      summary: Update a company by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+      responses:
+        '200':
+          description: Company updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        '404':
+          description: Company not found
+
+    delete:
+      tags:
+        - Companies
+      summary: Delete a company by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Company deleted
+        '404':
+          description: Company not found
+
 components:
   schemas:
     CandidateResponse:
@@ -359,6 +489,8 @@ components:
             type: string
         minExperience:
           type: integer
+        companyId:
+          type: string
 
     JobResponse:
       allOf:
@@ -378,3 +510,33 @@ components:
         matchScore:
           type: number
           format: float
+
+    CompanyRequest:
+      type: object
+      required:
+        - email
+        - password
+        - companyName
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        companyName:
+          type: string
+          minLength: 1
+
+    CompanyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [ COMPANY ]
+        companyName:
+          type: string

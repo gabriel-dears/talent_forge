@@ -11,6 +11,8 @@ public record CandidateRequestDto(
         @NotBlank(message = "The 'email' field is mandatory")
         @Email
         String email,
+        @NotBlank(message = "The 'password' field is mandatory")
+        String password,
         @NotNull
         @Min(0)
         Integer experienceYears,

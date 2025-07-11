@@ -8,19 +8,12 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-public class Candidate implements Serializable {
-
-    @Id
-    private String id;
+public class Candidate extends User implements Serializable {
 
     @NotBlank
     private String name;
-
-    @NotBlank
-    private String email;
 
     @Embedded
     private Resume resume;
@@ -35,24 +28,12 @@ public class Candidate implements Serializable {
     @Column(nullable = false)
     private LocalDate dateNotification;
 
-    @PrePersist
+    @Override
     public void prePersist() {
-        if (id == null) {
-            id = UUID.randomUUID().toString();
-        }
+        super.prePersist();
         if (dateNotification == null) {
-            dateNotification = LocalDate.now().plusDays(7);
+            dateNotification = LocalDate.now();
         }
-    }
-
-    // Getters and setters
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -61,14 +42,6 @@ public class Candidate implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Resume getResume() {

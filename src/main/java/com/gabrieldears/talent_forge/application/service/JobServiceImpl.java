@@ -28,6 +28,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobResponse create(JobRequest jobRequest) {
+        // TODO: company CRUD, getById and add to the job obj. Auth.
         Job job = jobMapper.fromJobRequestToJob(jobRequest);
         Job jobAfterCreation = customJobRepository.create(job);
         return jobMapper.fromJobToJobResponse(jobAfterCreation);

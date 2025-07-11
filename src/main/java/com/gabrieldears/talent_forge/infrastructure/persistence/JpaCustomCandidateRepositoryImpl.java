@@ -34,18 +34,6 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     }
 
     @Override
-    public boolean emailAlreadyExists(String email) {
-        return Boolean.TRUE.equals(Observation.createNotStarted("candidate.email-exists", registry)
-                .observe(() -> jpaCandidateRepository.existsByEmail(email)));
-    }
-
-    @Override
-    public boolean candidateExists(String candidateId) {
-        return Boolean.TRUE.equals(Observation.createNotStarted("candidate.exists-by-id", registry)
-                .observe(() -> jpaCandidateRepository.existsById(candidateId)));
-    }
-
-    @Override
     public Candidate create(Candidate candidate) {
         return Observation.createNotStarted("candidate.create", registry)
                 .observe(() -> jpaCandidateRepository.save(candidate));
@@ -76,12 +64,6 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
     public Candidate update(Candidate candidateToBeUpdated) {
         return Observation.createNotStarted("candidate.update", registry)
                 .observe(() -> jpaCandidateRepository.save(candidateToBeUpdated));
-    }
-
-    @Override
-    public boolean emailAlreadyExistsForAnotherCandidate(String email, String id) {
-        return Boolean.TRUE.equals(Observation.createNotStarted("candidate.email-exists-other-id", registry)
-                .observe(() -> jpaCandidateRepository.existsByEmailAndIdNot(email, id)));
     }
 
     @Override
