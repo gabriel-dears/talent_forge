@@ -16,6 +16,7 @@ public class JobMapper {
         return new JobResponse()
                 .id(job.getId() != null ? job.getId() : null)
                 .title(job.getTitle())
+                .companyId(job.getCompany() != null ? job.getCompany().getId() : null)
                 .description(job.getDescription())
                 .requiredSkills(job.getRequiredSkills()) // assuming it's List<String>
                 .minExperience(job.getMinExperience());

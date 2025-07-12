@@ -2,6 +2,7 @@ package com.gabrieldears.talent_forge.infrastructure.persistence;
 
 import com.gabrieldears.talent_forge.application.mapper.CandidateMapper;
 import com.gabrieldears.talent_forge.domain.model.Candidate;
+import com.gabrieldears.talent_forge.domain.model.Role;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
@@ -35,6 +36,7 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
 
     @Override
     public Candidate create(Candidate candidate) {
+        candidate.setRole(Role.CANDIDATE);
         return Observation.createNotStarted("candidate.create", registry)
                 .observe(() -> jpaCandidateRepository.save(candidate));
     }
@@ -62,6 +64,7 @@ public class JpaCustomCandidateRepositoryImpl implements CustomCandidateReposito
 
     @Override
     public Candidate update(Candidate candidateToBeUpdated) {
+        candidateToBeUpdated.setRole(Role.CANDIDATE);
         return Observation.createNotStarted("candidate.update", registry)
                 .observe(() -> jpaCandidateRepository.save(candidateToBeUpdated));
     }
