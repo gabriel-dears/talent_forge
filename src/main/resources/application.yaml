@@ -85,3 +85,9 @@ logging:
 ai:
   matcher:
     url: ${AI_MATCHER_URL:http://localhost:8000}
+
+jwt:
+  secret: my-secret
+  expirationMs: 900000          # 15 min
+  refreshExpirationMs: 86400000 # 1 day
+

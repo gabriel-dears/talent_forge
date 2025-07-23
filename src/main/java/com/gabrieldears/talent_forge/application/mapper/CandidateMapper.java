@@ -51,7 +51,6 @@ public class CandidateMapper {
         Candidate candidate = new Candidate();
         candidate.setId(id);
         candidate.setEmail(candidateRequestDto.email());
-        candidate.setPassword(candidateRequestDto.password());
         candidate.setName(candidateRequestDto.name());
         candidate.setSkills(candidateRequestDto.skills());
         candidate.setExperienceYears(candidateRequestDto.experienceYears());

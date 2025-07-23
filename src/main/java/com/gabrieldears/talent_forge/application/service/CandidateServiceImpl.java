@@ -10,6 +10,7 @@ import com.gabrieldears.talent_forge.domain.model.Candidate;
 import com.gabrieldears.talent_forge.domain.repository.CustomCandidateRepository;
 import com.gabrieldears.talent_forge.domain.service.CandidateService;
 import com.gabrieldears.talent_forge.domain.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,14 +22,16 @@ public class CandidateServiceImpl implements CandidateService {
     private final CreateCandidateValidator createCandidateValidator;
     private final UpdateCandidateValidator updateCandidateValidator;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public CandidateServiceImpl(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator, UserService userService) {
+    public CandidateServiceImpl(CustomCandidateRepository customCandidateRepository, CandidateMapper candidateMapper, RetrieveCandidateByIdValidator retrieveCandidateByIdValidator, CreateCandidateValidator createCandidateValidator, UpdateCandidateValidator updateCandidateValidator, UserService userService, PasswordEncoder passwordEncoder) {
         this.customCandidateRepository = customCandidateRepository;
         this.candidateMapper = candidateMapper;
         this.retrieveCandidateByIdValidator = retrieveCandidateByIdValidator;
         this.createCandidateValidator = createCandidateValidator;
         this.updateCandidateValidator = updateCandidateValidator;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -47,6 +50,7 @@ public class CandidateServiceImpl implements CandidateService {
     public com.gabrieldears.talent_forge.model.CandidateResponse create(CandidateRequestDto candidatesPostRequest) {
         createCandidateValidator.validate(candidatesPostRequest);
         Candidate candidate = candidateMapper.mapFromCandidatePostRequestToCandidate(candidatesPostRequest);
+        candidate.setPassword(passwordEncoder.encode(candidate.getPassword()));
         Candidate candidateAfterCreation = customCandidateRepository.create(candidate);
         return candidateMapper.mapFromCandidateToCandidateResponse(candidateAfterCreation);
     }

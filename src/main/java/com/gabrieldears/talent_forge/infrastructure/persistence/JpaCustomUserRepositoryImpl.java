@@ -1,9 +1,12 @@
 package com.gabrieldears.talent_forge.infrastructure.persistence;
 
+import com.gabrieldears.talent_forge.domain.model.User;
 import com.gabrieldears.talent_forge.domain.repository.CustomUserRepository;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class JpaCustomUserRepositoryImpl implements CustomUserRepository {
@@ -26,6 +29,11 @@ public class JpaCustomUserRepositoryImpl implements CustomUserRepository {
     public boolean userExists(String userId) {
         return Boolean.TRUE.equals(Observation.createNotStarted("candidate.exists-by-id", registry)
                 .observe(() -> jpaUserRepository.existsById(userId)));
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return jpaUserRepository.findByEmail(email);
     }
 
     @Override

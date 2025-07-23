@@ -1,6 +1,10 @@
 package com.gabrieldears.talent_forge.adapter.web;
 
+import com.gabrieldears.talent_forge.adapter.web.dto.JwtResponse;
 import com.gabrieldears.talent_forge.domain.service.CompanyService;
+import com.gabrieldears.talent_forge.infrastructure.security.service.RefreshTokenService;
+import com.gabrieldears.talent_forge.model.CandidateRegistrationResponseTokenInfo;
+import com.gabrieldears.talent_forge.model.CompanyRegistrationResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +22,11 @@ import java.net.URI;
 public class CompanyController implements com.gabrieldears.talent_forge.api.CompaniesApi {
 
     private final CompanyService companyService;
+    private final RefreshTokenService refreshTokenService;
 
-    public CompanyController(CompanyService companyService) {
+    public CompanyController(CompanyService companyService, RefreshTokenService refreshTokenService) {
         this.companyService = companyService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -38,7 +44,7 @@ public class CompanyController implements com.gabrieldears.talent_forge.api.Comp
         companyService.delete(id);
         return ResponseEntity.noContent().build();
     }
-    
+
     @Override
     public ResponseEntity<com.gabrieldears.talent_forge.model.CompanyResponse> companiesIdGet(
             @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id
@@ -46,7 +52,7 @@ public class CompanyController implements com.gabrieldears.talent_forge.api.Comp
         // TODO: retrieve jobs related to that company
         return ResponseEntity.ok(companyService.findById(id));
     }
-    
+
     @Override
     public ResponseEntity<com.gabrieldears.talent_forge.model.CompanyResponse> companiesIdPut(
             @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id,
@@ -54,9 +60,9 @@ public class CompanyController implements com.gabrieldears.talent_forge.api.Comp
     ) {
         return ResponseEntity.ok(companyService.update(companyRequest, id));
     }
-    
+
     @Override
-    public ResponseEntity<com.gabrieldears.talent_forge.model.CompanyResponse> companiesPost(
+    public ResponseEntity<CompanyRegistrationResponse> companiesPost(
             @Parameter(name = "CompanyRequest", required = true) @Valid @RequestBody com.gabrieldears.talent_forge.model.CompanyRequest companyRequest
     ) {
         com.gabrieldears.talent_forge.model.CompanyResponse companyResponse = companyService.create(companyRequest);
@@ -64,7 +70,20 @@ public class CompanyController implements com.gabrieldears.talent_forge.api.Comp
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(companyResponse.getId()).toUri();
-        return ResponseEntity.created(location).body(companyResponse);
+        JwtResponse jwtResponse = refreshTokenService.generateFullTokenStructure(companyRequest.getEmail(), companyRequest.getPassword());
+
+        CompanyRegistrationResponse companyRegistrationResponse = getCompanyRegistrationResponse(companyResponse, jwtResponse);
+        return ResponseEntity.created(location).body(companyRegistrationResponse);
     }
-    
+
+    private CompanyRegistrationResponse getCompanyRegistrationResponse(com.gabrieldears.talent_forge.model.CompanyResponse companyResponse, JwtResponse jwtResponse) {
+        CompanyRegistrationResponse companyRegistrationResponse = new CompanyRegistrationResponse();
+        companyRegistrationResponse.setCompany(companyResponse);
+        CandidateRegistrationResponseTokenInfo tokenInfo = new CandidateRegistrationResponseTokenInfo();
+        tokenInfo.setAccessToken(jwtResponse.accessToken());
+        tokenInfo.setRefreshToken(jwtResponse.refreshToken());
+        companyRegistrationResponse.setTokenInfo(tokenInfo);
+        return companyRegistrationResponse;
+    }
+
 }

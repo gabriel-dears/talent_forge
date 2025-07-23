@@ -1,9 +1,13 @@
 package com.gabrieldears.talent_forge.adapter.web;
 
 import com.gabrieldears.talent_forge.adapter.web.dto.CandidateRequestDto;
+import com.gabrieldears.talent_forge.adapter.web.dto.JwtResponse;
 import com.gabrieldears.talent_forge.application.service.CandidateServiceImpl;
 import com.gabrieldears.talent_forge.application.validator.BeanInputValidationUtils;
 import com.gabrieldears.talent_forge.domain.service.CandidateService;
+import com.gabrieldears.talent_forge.infrastructure.security.service.RefreshTokenService;
+import com.gabrieldears.talent_forge.model.CandidateRegistrationResponse;
+import com.gabrieldears.talent_forge.model.CandidateRegistrationResponseTokenInfo;
 import com.gabrieldears.talent_forge.model.CandidateResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -25,10 +29,12 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
 
     private final CandidateService candidateService;
     private final BeanInputValidationUtils beanInputValidationUtils;
+    private final RefreshTokenService refreshTokenService;
 
-    public CandidateController(CandidateServiceImpl candidateService, BeanInputValidationUtils beanInputValidationUtils) {
+    public CandidateController(CandidateServiceImpl candidateService, BeanInputValidationUtils beanInputValidationUtils, RefreshTokenService refreshTokenService) {
         this.candidateService = candidateService;
         this.beanInputValidationUtils = beanInputValidationUtils;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -57,7 +63,7 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
 
     @Override
     @PostMapping(value = "/candidates", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CandidateResponse> candidatesPost(
+    public ResponseEntity<CandidateRegistrationResponse> candidatesPost(
             @Parameter(name = "name") @Valid @RequestParam(value = "name") String name,
             @Parameter(name = "email") @Valid @RequestParam(value = "email") String email,
             @Parameter(name = "email") @Valid @RequestParam(value = "password") String password,
@@ -79,7 +85,20 @@ public class CandidateController implements com.gabrieldears.talent_forge.api.Ca
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(candidateResponse.getId()).toUri();
-        return ResponseEntity.created(location).body(candidateResponse);
+
+        JwtResponse jwtResponse = refreshTokenService.generateFullTokenStructure(email, password);
+        CandidateRegistrationResponse candidateRegistrationResponse = getCandidateRegistrationResponse(candidateResponse, jwtResponse);
+        return ResponseEntity.created(location).body(candidateRegistrationResponse);
+    }
+
+    private CandidateRegistrationResponse getCandidateRegistrationResponse(CandidateResponse candidateResponse, JwtResponse jwtResponse) {
+        CandidateRegistrationResponse candidateRegistrationResponse = new CandidateRegistrationResponse();
+        candidateRegistrationResponse.setCandidate(candidateResponse);
+        CandidateRegistrationResponseTokenInfo candidateRegistrationResponseTokenInfo = new CandidateRegistrationResponseTokenInfo();
+        candidateRegistrationResponseTokenInfo.setAccessToken(jwtResponse.accessToken());
+        candidateRegistrationResponseTokenInfo.setRefreshToken(jwtResponse.refreshToken());
+        candidateRegistrationResponse.setTokenInfo(candidateRegistrationResponseTokenInfo);
+        return candidateRegistrationResponse;
     }
 
     @PutMapping(value = "/candidates/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
