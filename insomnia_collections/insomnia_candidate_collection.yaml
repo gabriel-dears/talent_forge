@@ -1,202 +1,150 @@
-type: collection.insomnia.rest/5.0
-name: Talent Forge - Candidate
-meta:
-  id: wrk_a4a655d476ff4102b99c2d77be384890
-  created: 1749333562562
-  modified: 1749588081730
-  description: ""
-collection:
-  - url: http://localhost:8080/api/v1/candidates/6b8f94c8-2669-4d39-871a-7f45e9be08ea
-    name: Retrieve candidate by ID
-    meta:
-      id: req_4bcb52ad7b97451b9efeb225c675c4dc
-      created: 1749333562606
-      modified: 1750987374707
-      isPrivate: false
-      description: ""
-      sortKey: -1749333562606
-    method: GET
-    headers:
-      - name: User-Agent
-        value: insomnia/11.2.0
-    scripts:
-      preRequest: ""
-    settings:
-      renderRequestBody: true
-      encodeUrl: true
-      followRedirects: global
-      cookies:
-        send: true
-        store: true
-      rebuildPath: true
-  - url: http://localhost:8080/api/v1/candidates
-    name: Create candidate
-    meta:
-      id: req_c3c8424b137844c4b7d52093b587278b
-      created: 1749333603384
-      modified: 1750987300907
-      isPrivate: false
-      description: ""
-      sortKey: -1749333603384
+_type: export
+__export_format: 4
+__export_date: '2025-07-23T22:03:34.628634'
+__export_source: insomnia.desktop.app:v2025.7.23
+resources:
+  - _id: wrk_1ceb8a237daa46b3afb072a5
+    name: Talent Forge Automation
+    _type: workspace
+  - _id: req_7851394087074f98b89ea485
+    parentId: wrk_1ceb8a237daa46b3afb072a5
+    modified: 1753308214627
+    created: 1753308214627
+    url: http://localhost:8080/api/v1/candidates
+    name: 1. Create Candidate
     method: POST
     body:
       mimeType: multipart/form-data
       params:
         - name: name
           value: Gabriel Soares
-          id: pair_d3b9c52f95144bdd9d19e7a2fa9de254
-        - id: pair_95eb389852af4b96a2f75f45807fff0f
-          name: email
-          value: gabriel21@gmail.com
-          description: ""
-          disabled: false
-        - id: pair_d410228d4d0c4213b0b93ac705744b1d
-          name: experienceYears
-          value: "3"
-          description: ""
-          disabled: false
-        - id: pair_c69d12f18102479dbf03219d77d49b63
-          name: skills
-          value: Spring, Java
-          description: ""
-          disabled: false
-        - id: pair_54964a320cff41e38980ef8ed5b37f15
-          name: resume
-          value: ""
-          description: ""
-          disabled: false
+        - name: email
+          value: gabriel3323@gmail.com
+        - name: password
+          value: xxxx
+        - name: skills
+          value: Java, Spring
+        - name: experienceYears
+          value: '3'
+        - name: resume
           type: file
-          fileName: /home/gabriel/Downloads/Gabriel_Soares_Profile.pdf
+          fileName: /home/gabriel/Downloads/Profile.pdf
+    parameters: []
     headers:
       - name: Content-Type
         value: multipart/form-data
-      - name: User-Agent
-        value: insomnia/11.2.0
-    settings:
-      renderRequestBody: true
-      encodeUrl: true
-      followRedirects: global
-      cookies:
-        send: true
-        store: true
-      rebuildPath: true
-  - url: http://localhost:8080/api/v1/candidates/04f16db0-c2c0-4710-bbc7-2dcbf322eb07
-    name: Delete candidate
-    meta:
-      id: req_2b5d7751ad2f4bb0a2e64b1226b5be59
-      created: 1749516567223
-      modified: 1750126377982
-      isPrivate: false
-      description: ""
-      sortKey: -1749516567223
-    method: DELETE
+    _type: request
+    metaSortKey: -1
+    tests: '
+
+    const body = JSON.parse(response.body);
+
+    const candidateId = body?.candidate?.id;
+
+    insomnia.environment.set("candidate_id", candidateId);
+
+    '
+  - _id: req_24d9c64ef7014f5080f21d8d
+    parentId: wrk_1ceb8a237daa46b3afb072a5
+    modified: 1753308214627
+    created: 1753308214627
+    url: http://localhost:8080/api/v1/login
+    name: 2. Login
+    method: POST
+    body:
+      mimeType: application/json
+      text: "{\n  \"email\": \"gabriel3323@gmail.com\",\n  \"password\": \"xxxx\"\n}"
     headers:
+      - name: Content-Type
+        value: application/json
       - name: User-Agent
-        value: insomnia/11.2.0
-    settings:
-      renderRequestBody: true
-      encodeUrl: true
-      followRedirects: global
-      cookies:
-        send: true
-        store: true
-      rebuildPath: true
-  - url: http://localhost:8080/api/v1/candidates
-    name: Retrieve list of candidates
-    meta:
-      id: req_0f7c79eba16a4511884784d34bbb4a38
-      created: 1749520651583
-      modified: 1750126353101
-      isPrivate: false
-      description: ""
-      sortKey: -1749520651583
+        value: insomnia/11.3.0
+    _type: request
+    metaSortKey: -2
+    tests: '
+
+    const jwt = JSON.parse(response.body);
+
+    insomnia.environment.set("access_token", jwt.accessToken);
+
+    insomnia.environment.set("refresh_token", jwt.refreshToken);
+
+    '
+  - _id: req_038d031e53bd4bc1bdf33249
+    parentId: wrk_1ceb8a237daa46b3afb072a5
+    modified: 1753308214627
+    created: 1753308214627
+    url: http://localhost:8080/api/v1/candidates
+    name: 3. Get Candidate List
     method: GET
-    parameters:
-      - id: pair_185a3bda807a46c99afe409aa79de48b
-        name: size
-        value: "1"
-        description: ""
-        disabled: false
-      - id: pair_df5d581931844631b96e3066cd67fe4b
-        name: page
-        value: "0"
-        description: ""
-        disabled: false
     headers:
+      - name: Content-Type
+        value: application/json
       - name: User-Agent
-        value: insomnia/11.2.0
-    settings:
-      renderRequestBody: true
-      encodeUrl: true
-      followRedirects: global
-      cookies:
-        send: true
-        store: true
-      rebuildPath: true
-  - url: http://localhost:8080/api/v1/candidates/3f94088e-9922-4d85-800e-2762925fe33f
-    name: Update candidate
-    meta:
-      id: req_5013689e1b1643a09a41e86c3df7dbed
-      created: 1749587988530
-      modified: 1750126383876
-      isPrivate: false
-      description: ""
-      sortKey: -1749587988530
+        value: insomnia/11.3.0
+      - name: Authorization
+        value: Bearer {{ access_token }}
+    _type: request
+    metaSortKey: -3
+  - _id: req_f38004e996d242e5b262f075
+    parentId: wrk_1ceb8a237daa46b3afb072a5
+    modified: 1753308214627
+    created: 1753308214627
+    url: http://localhost:8080/api/v1/candidates/{{ candidate_id }}
+    name: 4. Get Candidate by ID
+    method: GET
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.3.0
+      - name: Authorization
+        value: Bearer {{ access_token }}
+    _type: request
+    metaSortKey: -4
+  - _id: req_b1297476097740799160d711
+    parentId: wrk_1ceb8a237daa46b3afb072a5
+    modified: 1753308214627
+    created: 1753308214627
+    url: http://localhost:8080/api/v1/candidates/{{ candidate_id }}
+    name: 5. Update Candidate
     method: PUT
     body:
       mimeType: multipart/form-data
       params:
-        - id: pair_8573d062d442447087309314f5861aed
-          name: name
-          value: GGG
-          description: ""
-          disabled: false
-        - id: pair_682946e69bec4c65bc87628c8c2d91e7
-          name: email
-          value: ggg@gmail.com
-          description: ""
-          disabled: false
-        - id: pair_78938a7b48924fe58458e4dd3375e22b
-          name: experienceYears
-          value: "2"
-          description: ""
-          disabled: false
-        - id: pair_a0abc8803bc14cbbb7867054b05bc605
-          name: skills
+        - name: name
+          value: Updated Name
+        - name: email
+          value: updated@gmail.com
+        - name: password
+          value: updatedpass
+        - name: skills
           value: Java
-          description: ""
-          disabled: false
-        - id: pair_f5f01c20db864cb0a896666ed850b293
-          name: resume
-          value: ""
-          description: ""
-          disabled: false
+        - name: experienceYears
+          value: '4'
+        - name: resume
           type: file
           fileName: /home/gabriel/Downloads/Profile.pdf
     headers:
       - name: Content-Type
         value: multipart/form-data
+      - name: Authorization
+        value: Bearer {{ access_token }}
+    _type: request
+    metaSortKey: -5
+  - _id: req_40a7463725f24b3286d3e582
+    parentId: wrk_1ceb8a237daa46b3afb072a5
+    modified: 1753308214627
+    created: 1753308214627
+    url: http://localhost:8080/api/v1/candidates/{{ candidate_id }}
+    name: 6. Delete Candidate
+    method: DELETE
+    headers:
+      - name: Content-Type
+        value: application/json
       - name: User-Agent
-        value: insomnia/11.2.0
-        id: pair_041d330195c24615948afb309bc75500
-    settings:
-      renderRequestBody: true
-      encodeUrl: true
-      followRedirects: global
-      cookies:
-        send: true
-        store: true
-      rebuildPath: true
-cookieJar:
-  name: Default Jar
-  meta:
-    id: jar_8a5fa6bf1a54cb20f29bedd08aa0465fad078084
-    created: 1749333562579
-    modified: 1749333562579
-environments:
-  name: Base Environment
-  meta:
-    id: env_8a5fa6bf1a54cb20f29bedd08aa0465fad078084
-    created: 1749333562578
-    modified: 1749333562578
-    isPrivate: false
+        value: insomnia/11.3.0
+      - name: Authorization
+        value: Bearer {{ access_token }}
+    _type: request
+    metaSortKey: -6
